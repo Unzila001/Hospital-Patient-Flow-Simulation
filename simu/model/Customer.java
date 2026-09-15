@@ -8,8 +8,6 @@ import simu.framework.*;
  * TODO: This is to be implemented according to the requirements of the simulation model (data!)
  */
 
-// test
-
 public class Customer {
 	private double arrivalTime;
 	private double removalTime;
