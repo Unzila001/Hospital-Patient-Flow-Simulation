@@ -29,11 +29,11 @@ public class ServicePoint {
 		}
 	}
 	//Customer waiting for service
-	private LinkedList<Customer> queue = new LinkedList<>();
+	private LinkedList<Customer> queue = new LinkedList<>(); //Waiting queue for customers
 
-	//Customers currently being serviced
+	//customersInServiceList = Customers currently being serviced
 	//This will prevent 2 doctors from servicing the same customer at the same time
-	private LinkedList<Customer> customersInServiceList = new LinkedList<>();
+	private LinkedList<ServiceRecord> customersInServiceList = new LinkedList<>();
 
 	private ContinuousGenerator generator;
 	private EventList eventList;
@@ -66,23 +66,37 @@ public class ServicePoint {
 	 *
 	 * @param a Customer to be queued
 	 */
-	public void addQueue(Customer a) {	// The first customer of the queue is always in service
+	public void addQueue(Customer a) {	// Add new customer to the waiting queue
 		queue.add(a);
 	}
 
 	/**
-	 * Remove customer from the waiting queue.
+	 * Remove customer from the service point after service completion.
 	 * Here we calculate also the appropriate measurement values.
 	 *
-	 * @return Customer retrieved from the waiting queue
+	 * @return Customer whose service has been completed
 	 */
-	public Customer removeQueue() {		// Remove serviced customer
-		customersInService--;
-		return customersInServiceList.poll();
+	public Customer removeQueue() {
+
+		//Current simulation time = completion time of this event
+		double currentTime = Clock.getInstance().getClock();
+
+		//Find customer that has completed service
+		for (int i = 0; i < customersInServiceList.size(); i++) {
+			ServiceRecord record = customersInServiceList.get(i);
+
+			if (record.completionTime == currentTime) {
+				customersInServiceList.remove(i);
+				customersInService--;
+
+				return record.customer;
+			}
+		}
+		return null;
 	}
 
 	/**
-	 * Begins a new service, customer is on the queue during the service
+	 * Begins a new service, by moving a customer from the waiting queue to the in-service list.
 	 *
 	 * Inserts a new event to the event list when the service should be ready.
 	 */
@@ -90,14 +104,21 @@ public class ServicePoint {
 		//Take the first waiting customer from queue
 		Customer customer = queue.poll();
 
-		//Move the customer to the in-service list
-		customersInServiceList.add(customer);
+		//Generate service time
+		double serviceTime = generator.sample();
+
+		//Calculate when this customer's service will finish
+		double completionTime = Clock.getInstance().getClock() + serviceTime;
+
+		//Store customer together with the completion time
+		customersInServiceList.add(new ServiceRecord(customer, completionTime));
 
 		Trace.out(Trace.Level.INFO, "Starting " + name + " service for customer #" + customer.getId());
 		
 		customersInService++;
-		double serviceTime = generator.sample();
-		eventList.add(new Event(eventTypeScheduled, Clock.getInstance().getClock() + serviceTime));
+
+		//schedule the service completion event
+		eventList.add(new Event(eventTypeScheduled, completionTime));
 	}
 
 	/**
@@ -112,7 +133,7 @@ public class ServicePoint {
 	/**
 	 * Check whether there is customers on the waiting queue
 	 *
-	 * @return logival value indicating queue status
+	 * @return logical value indicating queue status
 	 */
 	public boolean isOnQueue(){
 		return queue.size() != 0;
