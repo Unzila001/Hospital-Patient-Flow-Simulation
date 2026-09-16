@@ -30,7 +30,16 @@ public class MyEngine extends Engine {
 	 * service times.
 	 */
 	public MyEngine() {
-		servicePoints = new ServicePoint[3];
+		//6 hospital service points.
+		servicePoints = new ServicePoint[6];
+
+		//Capacity of each hospital service point
+		int registrationCapacity = 1;
+		int triageCapacity = 1;
+		int doctorCapacity = 2;
+		int laboratoryCapacity = 1;
+		int xrayCapacity = 1;
+		int treatmentCapacity = 1;
 
 		if (TEXTDEMO) {
 			/* special setup for the example in text
@@ -92,16 +101,16 @@ public class MyEngine extends Engine {
 				// normal distribution used to model service times
 				serviceTime = new Normal(10, 6, Integer.toUnsignedLong(r.nextInt()));
 
-			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.DEP1);
-			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.DEP2);
-			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DEP3);
+			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.DEP1, "Registration", registrationCapacity);
+			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.DEP2, "Triage", triageCapacity);
+			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DEP3, "Doctor", doctorCapacity);
 
 			arrivalProcess = new ArrivalProcess(arrivalTime, eventList, EventType.ARR1);
 		} else {
 			/* more realistic simulation case with variable customer arrival times and service times */
-			servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.DEP1);
-			servicePoints[1] = new ServicePoint(new Normal(10, 10), eventList, EventType.DEP2);
-			servicePoints[2] = new ServicePoint(new Normal(5, 3), eventList, EventType.DEP3);
+			servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.DEP1, "Registration", registrationCapacity);
+			servicePoints[1] = new ServicePoint(new Normal(10, 10), eventList, EventType.DEP2, "Triage", triageCapacity);
+			servicePoints[2] = new ServicePoint(new Normal(5, 3), eventList, EventType.DEP3, "Doctor", doctorCapacity);
 
 			arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARR1);
 		}

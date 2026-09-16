@@ -19,13 +19,31 @@ import java.util.LinkedList;
  * Service point collects measurement parameters.
  */
 public class ServicePoint {
-	private LinkedList<Customer> queue = new LinkedList<>(); // Data Structure used
+	private static class ServiceRecord {
+		private Customer customer;
+		private double completionTime;
+
+		public ServiceRecord(Customer customer, double completionTime) {
+			this.customer = customer;
+			this.completionTime = completionTime;
+		}
+	}
+	//Customer waiting for service
+	private LinkedList<Customer> queue = new LinkedList<>();
+
+	//Customers currently being serviced
+	//This will prevent 2 doctors from servicing the same customer at the same time
+	private LinkedList<Customer> customersInServiceList = new LinkedList<>();
+
 	private ContinuousGenerator generator;
 	private EventList eventList;
 	private EventType eventTypeScheduled;
 	//Queuestrategy strategy; // option: ordering of the customer
-	private boolean reserved = false;
 
+	//Hospital service point information
+	private String name;
+	private int capacity;
+	private int customersInService = 0;
 
 	/**
 	 * Create the service point with a waiting queue.
@@ -34,10 +52,13 @@ public class ServicePoint {
 	 * @param eventList Simulator event list, needed for the insertion of service ready event
 	 * @param type Event type for the service end event
 	 */
-	public ServicePoint(ContinuousGenerator generator, EventList eventList, EventType type){
+	//Constructor for the service point
+	public ServicePoint(ContinuousGenerator generator, EventList eventList, EventType type, String name, int capacity){
 		this.eventList = eventList;
 		this.generator = generator;
 		this.eventTypeScheduled = type;
+		this.name = name;
+		this.capacity = capacity;
 	}
 
 	/**
@@ -56,8 +77,8 @@ public class ServicePoint {
 	 * @return Customer retrieved from the waiting queue
 	 */
 	public Customer removeQueue() {		// Remove serviced customer
-		reserved = false;
-		return queue.poll();
+		customersInService--;
+		return customersInServiceList.poll();
 	}
 
 	/**
@@ -65,12 +86,18 @@ public class ServicePoint {
 	 *
 	 * Inserts a new event to the event list when the service should be ready.
 	 */
-	public void beginService() {		// Begins a new service, customer is on the queue during the service
-		Trace.out(Trace.Level.INFO, "Starting a new service for the customer #" + queue.peek().getId());
+	public void beginService() {
+		//Take the first waiting customer from queue
+		Customer customer = queue.poll();
+
+		//Move the customer to the in-service list
+		customersInServiceList.add(customer);
+
+		Trace.out(Trace.Level.INFO, "Starting " + name + " service for customer #" + customer.getId());
 		
-		reserved = true;
+		customersInService++;
 		double serviceTime = generator.sample();
-		eventList.add(new Event(eventTypeScheduled, Clock.getInstance().getClock()+serviceTime));
+		eventList.add(new Event(eventTypeScheduled, Clock.getInstance().getClock() + serviceTime));
 	}
 
 	/**
@@ -79,7 +106,7 @@ public class ServicePoint {
 	 * @return logical value indicating service state
 	 */
 	public boolean isReserved(){
-		return reserved;
+		return customersInService >= capacity;
 	}
 
 	/**
@@ -89,5 +116,35 @@ public class ServicePoint {
 	 */
 	public boolean isOnQueue(){
 		return queue.size() != 0;
+	}
+
+	//Check if the service point has available capacity
+	public boolean hasAvailableCapacity() {
+		return customersInService < capacity;
+	}
+
+	//Check if there are customers on the waiting queue
+	public boolean hasWaitingCustomers() {
+		return !queue.isEmpty();
+	}
+
+	//Return the name of the service point
+	public String getName() {
+		return name;
+	}
+
+	//Return maximum service capacity of the service point
+	public int getCapacity() {
+		return capacity;
+	}
+
+	//Return the number of customers currently being serviced
+	public int getCustomersInService() {
+		return customersInService;
+	}
+
+	//Return the number of customers currently waiting in the queue
+	public int getQueueLength() {
+		return queue.size();
 	}
 }
