@@ -116,7 +116,7 @@ public class ServicePoint {
 		//Store customer together with the completion time
 		customersInServiceList.add(new ServiceRecord(customer, completionTime));
 
-		Trace.out(Trace.Level.INFO, "Starting " + name + " service for customer #" + customer.getId());
+		Trace.out(Trace.Level.INFO, String.format("Starting %s service for customer #%d at %.2f minutes", name, customer.getId(), Clock.getInstance().getClock()));
 		
 		customersInService++;
 

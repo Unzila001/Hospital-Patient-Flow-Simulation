@@ -22,7 +22,8 @@ public class Customer {
 	    id = i++;
 	    
 		arrivalTime = Clock.getInstance().getClock();
-		Trace.out(Trace.Level.INFO, "New customer #" + id + " arrived at  " + arrivalTime);
+		Trace.out(Trace.Level.INFO,
+				String.format("New customer #%d arrived at %.2f minutes", id, arrivalTime));
 	}
 
 	/**
@@ -70,12 +71,12 @@ public class Customer {
 	 */
 	public void reportResults() {
 		Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
-		Trace.out(Trace.Level.INFO, "Customer "   + id + " arrived: " + arrivalTime);
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " removed: " + removalTime);
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " stayed: "  + (removalTime - arrivalTime));
+		Trace.out(Trace.Level.INFO, String.format("Customer %d arrived at %.2f minutes", id, arrivalTime));
+		Trace.out(Trace.Level.INFO,String.format("Customer %d removed at %.2f minutes", id, removalTime));
+		Trace.out(Trace.Level.INFO,String.format("Customer %d arrived at %.2f minutes", id, (removalTime - arrivalTime)));
 
 		sum += (removalTime - arrivalTime);
 		double mean = sum/id;
-		System.out.println("Current mean of the customer service times " + mean);
+		System.out.println(String.format("Current mean of the customer service times: %.2f minutes " + mean));
 	}
 }
