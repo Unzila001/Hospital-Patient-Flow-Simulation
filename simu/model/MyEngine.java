@@ -104,7 +104,7 @@ public class MyEngine extends Engine {
 			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity);
 			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity);
 			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity);
-			servicePoints[3] = new ServicePoint(serviceTime, eventList, EventType.XRAY_COMPLETE, "x-ray", xrayCapacity);
+			servicePoints[3] = new ServicePoint(serviceTime, eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity);
 			servicePoints[4] = new ServicePoint(serviceTime, eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity);
 			servicePoints[5] = new ServicePoint(serviceTime, eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity);
 
