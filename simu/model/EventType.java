@@ -8,5 +8,5 @@ import simu.framework.IEventType;
  * TODO: This must be adapted to the actual simulator
  */
 public enum EventType implements IEventType {
-	ARR1, DEP1, DEP2, DEP3;
+	ARRIVAL, REGISTRATION_COMPLETE, TRIAGE_COMPLETE, DOCTOR_COMPLETE, LABORATORY_COMPLETE, XRAY_COMPLETE, TREATMENT_COMPLETE, DEPARTURE;
 }

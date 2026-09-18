@@ -30,7 +30,7 @@ public class MyEngine extends Engine {
 	 * service times.
 	 */
 	public MyEngine() {
-		servicePoints = new ServicePoint[3];
+		servicePoints = new ServicePoint[7];
 
 		if (TEXTDEMO) {
 			/* special setup for the example in text
@@ -92,18 +92,28 @@ public class MyEngine extends Engine {
 				// normal distribution used to model service times
 				serviceTime = new Normal(10, 6, Integer.toUnsignedLong(r.nextInt()));
 
-			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.DEP1);
-			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.DEP2);
-			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DEP3);
+			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.REGISTRATION_COMPLETE);
+			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.TRIAGE_COMPLETE);
+			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DOCTOR_COMPLETE);
+			servicePoints[3] = new ServicePoint(serviceTime, eventList, EventType.XRAY_COMPLETE);
+			servicePoints[4] = new ServicePoint(serviceTime, eventList, EventType.LABORATORY_COMPLETE);
+			servicePoints[5] = new ServicePoint(serviceTime, eventList, EventType.TREATMENT_COMPLETE);
+			servicePoints[6] = new ServicePoint(serviceTime, eventList, EventType.DEPARTURE);
 
-			arrivalProcess = new ArrivalProcess(arrivalTime, eventList, EventType.ARR1);
+
+			arrivalProcess = new ArrivalProcess(arrivalTime, eventList, EventType.ARRIVAL);
 		} else {
 			/* more realistic simulation case with variable customer arrival times and service times */
-			servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.DEP1);
-			servicePoints[1] = new ServicePoint(new Normal(10, 10), eventList, EventType.DEP2);
-			servicePoints[2] = new ServicePoint(new Normal(5, 3), eventList, EventType.DEP3);
+			servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.REGISTRATION_COMPLETE);
+			servicePoints[1] = new ServicePoint(new Normal(10, 10), eventList, EventType.TRIAGE_COMPLETE);
+			servicePoints[2] = new ServicePoint(new Normal(5, 3), eventList, EventType.DOCTOR_COMPLETE);
+			servicePoints[3] = new ServicePoint(new Normal(6, 8), eventList, EventType.XRAY_COMPLETE);
+			servicePoints[4] = new ServicePoint(new Normal(6, 8), eventList, EventType.LABORATORY_COMPLETE);
+			servicePoints[5] = new ServicePoint(new Normal(3, 10), eventList, EventType.TREATMENT_COMPLETE);
+			servicePoints[6] = new ServicePoint(new Normal(5, 3), eventList, EventType.DEPARTURE);
 
-			arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARR1);
+
+			arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARRIVAL);
 		}
 	}
 
@@ -115,27 +125,50 @@ public class MyEngine extends Engine {
 	@Override
 	protected void runEvent(Event t) {  // B phase events
 		Customer a;
+		int random = 0;
 
 		switch ((EventType)t.getType()) {
-		case ARR1:
+		case ARRIVAL:
 			servicePoints[0].addQueue(new Customer());
 			arrivalProcess.generateNextEvent();
 			break;
 
-		case DEP1:
+		case REGISTRATION_COMPLETE:
 			a = servicePoints[0].removeQueue();
 			servicePoints[1].addQueue(a);
 			break;
 
-		case DEP2:
+		case TRIAGE_COMPLETE:
 			a = servicePoints[1].removeQueue();
 			servicePoints[2].addQueue(a);
 			break;
 
-		case DEP3:
+		case DOCTOR_COMPLETE:
 			a = servicePoints[2].removeQueue();
+			random = (int)(Math.random() * 4) + 3;
+			servicePoints[random].addQueue(a);
+			break;
+
+		case XRAY_COMPLETE:
+			a = servicePoints[3].removeQueue();
+			servicePoints[5].addQueue(a);
+			break;
+
+		case LABORATORY_COMPLETE:
+			a = servicePoints[4].removeQueue();
+			servicePoints[5].addQueue(a);
+			break;
+
+		case TREATMENT_COMPLETE:
+			a = servicePoints[5].removeQueue();
+			servicePoints[6].addQueue(a);
+			break;
+
+		case DEPARTURE:
+			a = servicePoints[6].removeQueue();
 			a.setRemovalTime(Clock.getInstance().getClock());
-		    a.reportResults();
+			a.setTotalHospitalTime();
+			a.reportResults();
 			break;
 		}
 	}
