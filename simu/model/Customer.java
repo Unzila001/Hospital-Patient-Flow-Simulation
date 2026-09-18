@@ -12,13 +12,13 @@ public class Customer {
 	private double arrivalTime;
 	private double removalTime;
 	private double totalHospitalTime;
-	private String patientCondition;
+	private String patientCondition = "";
 	private boolean priority;
 	private int id;
 	private static int i = 1;
 	private static long sum = 0;
 	private static long minorInjury;
-	private static long seriusInjury;
+	private static long seriousInjury;
 	private static long illness;
 
 	/**
@@ -80,10 +80,10 @@ public class Customer {
 	 * @param patientCondition Customer medical condition (serious injury, minor injury, illness)
 	 */
 	public void setPatientCondition (String patientCondition) {
-		if(!patientCondition.isEmpty()){
-			this.patientCondition += patientCondition;
+		if(patientCondition != null && (patientCondition.equals("minor injury") || patientCondition.equals("serious injury") || patientCondition.equals("illness"))){
+			this.patientCondition = patientCondition;
 		} else {
-			System.out.println("Give patient condition!");
+			System.out.println("Invalid patient condition!");
 		}
 	}
 
@@ -136,13 +136,13 @@ public class Customer {
 		if(patientCondition.equals("minor injury")){
 			minorInjury ++;
 		} else if(patientCondition.equals("serious injury")){
-			seriusInjury ++;
+			seriousInjury ++;
 		} else {
 			illness ++;
 		}
 
 		System.out.println("Current amount of patients with minor injuries: " + minorInjury);
-		System.out.println("Current amount of patients with serious injury: " + seriusInjury);
+		System.out.println("Current amount of patients with serious injury: " + seriousInjury);
 		System.out.println("Current amount of patients with illnesses: " + illness);
 
 	}
