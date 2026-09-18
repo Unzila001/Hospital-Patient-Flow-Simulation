@@ -19,10 +19,13 @@ import java.util.LinkedList;
  * Service point collects measurement parameters.
  */
 public class ServicePoint {
-	private static class ServiceRecord {
+	private static class ServiceRecord { //Store a customer currently being serviced and their service completion time
+		//Customer currently receiving service
 		private Customer customer;
+		//Simulation time when customers service will finish
 		private double completionTime;
 
+		//Create service record for customer
 		public ServiceRecord(Customer customer, double completionTime) {
 			this.customer = customer;
 			this.completionTime = completionTime;
