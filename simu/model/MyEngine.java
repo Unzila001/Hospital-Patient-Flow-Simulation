@@ -145,12 +145,28 @@ public class MyEngine extends Engine {
 
 		case TRIAGE_COMPLETE:
 			a = servicePoints[1].removeQueue();
+
+			//Triage assigns the patient's condition
+			int condition = new Random().nextInt(3);
+
+			if (condition == 0) {
+				a.setPatientCondition("minor injury");
+			} else if (condition == 1) {
+				a.setPatientCondition("serious injury");
+			} else {
+				a.setPatientCondition("illness");
+			}
+
+			//Triage assigns the patient's priority
+			boolean emergency = new Random().nextDouble() < 0.20;
+			a.setPriority(emergency);
 			servicePoints[2].addQueue(a);
 			break;
 
 		case DOCTOR_COMPLETE:
 			a = servicePoints[2].removeQueue();
 			a.setRemovalTime(Clock.getInstance().getClock());
+			a.setTotalHospitalTime();
 		    a.reportResults();
 			break;
 		}

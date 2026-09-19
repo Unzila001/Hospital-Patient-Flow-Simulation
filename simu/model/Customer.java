@@ -131,7 +131,7 @@ public class Customer {
 
 		sum += (removalTime - arrivalTime);
 		double mean = sum/id;
-		System.out.printf("Current mean patient time in hospital: %.2f minutes.", mean);
+		System.out.printf("Current mean patient time in hospital: %.2f minutes.%n", mean);
 
 		if(patientCondition.equals("minor injury")){
 			minorInjury ++;
