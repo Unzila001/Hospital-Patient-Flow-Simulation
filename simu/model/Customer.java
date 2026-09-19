@@ -16,7 +16,7 @@ public class Customer {
 	private boolean priority;
 	private int id;
 	private static int i = 1;
-	private static long sum = 0;
+	private static double sum = 0;
 	private static long minorInjury;
 	private static long seriousInjury;
 	private static long illness;
@@ -118,9 +118,9 @@ public class Customer {
 	 */
 	public void reportResults() {
 		Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
-		Trace.out(Trace.Level.INFO, "Customer "   + id + " arrived: " + arrivalTime);
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " removed: " + removalTime);
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " stayed: "  + totalHospitalTime);
+		Trace.out(Trace.Level.INFO, String.format("New customer #%d arrived at %.2f minutes.", id, arrivalTime));
+		Trace.out(Trace.Level.INFO, String.format("Customer #%d removed at %.2f minutes.", id, removalTime));
+		Trace.out(Trace.Level.INFO, String.format("Customer #%d stayed %.2f minutes.", id, totalHospitalTime));
 		Trace.out(Trace.Level.INFO,"Customer "    + id + " had condition: "  + patientCondition);
 
 		if(priority) {
@@ -131,7 +131,7 @@ public class Customer {
 
 		sum += (removalTime - arrivalTime);
 		double mean = sum/id;
-		System.out.println("Current mean of the customer service times " + mean);
+		System.out.printf("Current mean patient time in hospital: %.2f minutes.", mean);
 
 		if(patientCondition.equals("minor injury")){
 			minorInjury ++;
