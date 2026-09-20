@@ -164,13 +164,61 @@ public class MyEngine extends Engine {
 			break;
 
 		case DOCTOR_COMPLETE:
+			// The doctor's appointment has finished.
 			a = servicePoints[2].removeQueue();
-			a.setRemovalTime(Clock.getInstance().getClock());
-			a.setTotalHospitalTime();
-		    a.reportResults();
+			// Generate a random number between 0.0 and 1.0.
+			double decision = Math.random();
+			if (decision < 0.30) {
+				// 30%: send the patient to the laboratory.
+				System.out.println("Doctor -> Laboratory");
+				servicePoints[4].addQueue(a);
+			} else if (decision < 0.50) {
+				// 20%: send the patient to X-ray.
+				System.out.println("Doctor -> X-ray");
+				servicePoints[3].addQueue(a);
+
+			} else if (decision < 0.90) {
+				// 40%: send the patient to treatment.
+				System.out.println("Doctor -> Treatment");
+				servicePoints[5].addQueue(a);
+
+			} else {
+				// 10%: discharge the patient directly.
+				System.out.println("Doctor -> Direct discharge");
+				a.setRemovalTime(Clock.getInstance().getClock());
+				a.setTotalHospitalTime();
+				a.reportResults();
+			}
+
 			break;
-		}
+
+		case LABORATORY_COMPLETE:
+         // Laboratoriotutkimus on valmis.
+         a = servicePoints[4].removeQueue();
+
+         // Potilas siirtyy laboratorion jälkeen hoitoon.
+         servicePoints[5].addQueue(a);
+         break;
+
+      	case XRAY_COMPLETE:
+         // Röntgenkuvaus on valmis.
+         a = servicePoints[3].removeQueue();
+
+         // Potilas siirtyy röntgenin jälkeen hoitoon.
+         servicePoints[5].addQueue(a);
+         break;
+
+      	case TREATMENT_COMPLETE:
+         // Hoito on valmis.
+         a = servicePoints[5].removeQueue();
+
+         // Potilas poistuu sairaalasta.
+         a.setRemovalTime(Clock.getInstance().getClock());
+         a.setTotalHospitalTime();
+         a.reportResults();
+         break;
 	}
+}
 
 	@Override
 	protected void tryCEvents() {
