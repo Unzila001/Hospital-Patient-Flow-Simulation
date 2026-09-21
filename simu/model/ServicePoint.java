@@ -2,6 +2,8 @@ package simu.model;
 
 import eduni.distributions.ContinuousGenerator;
 import simu.framework.*;
+
+import javax.print.attribute.standard.QueuedJobCount;
 import java.util.LinkedList;
 
 /**
@@ -31,8 +33,20 @@ public class ServicePoint {
 			this.completionTime = completionTime;
 		}
 	}
+
+	//Create Queue record for customer
+	private static class QueueRecord {
+		private Customer customer;
+		private double queueEntryTime;
+
+		public QueueRecord(Customer customer, double queueEntryTime) {
+			this.customer = customer;
+			this.queueEntryTime = queueEntryTime;
+		}
+	}
+
 	//Customer waiting for service
-	private LinkedList<Customer> queue = new LinkedList<>(); //Waiting queue for customers
+	private LinkedList<QueueRecord> queue = new LinkedList<>(); //Waiting queue for customers
 
 	//customersInServiceList = Customers currently being serviced
 	//This will prevent 2 doctors from servicing the same customer at the same time
@@ -47,6 +61,12 @@ public class ServicePoint {
 	private String name;
 	private int capacity;
 	private int customersInService = 0;
+	//Service point statics
+	private double totalWaitingTime = 0;
+	private int customersStartedService = 0;
+	private int maximumQueueLength = 0;
+	private double totalServiceTime = 0;
+
 
 	/**
 	 * Create the service point with a waiting queue.
@@ -69,8 +89,14 @@ public class ServicePoint {
 	 *
 	 * @param a Customer to be queued
 	 */
-	public void addQueue(Customer a) {	// Add new customer to the waiting queue
-		queue.add(a);
+	public void addQueue(Customer a) {
+		//Store customer together with the time they entered this queue
+		queue.add(new QueueRecord(a, Clock.getInstance().getClock()));
+
+		//Update maximum queue length
+		if (queue.size() > maximumQueueLength) {
+			maximumQueueLength = queue.size();
+		}
 	}
 
 	/**
@@ -105,10 +131,20 @@ public class ServicePoint {
 	 */
 	public void beginService() {
 		//Take the first waiting customer from queue
-		Customer customer = queue.poll();
+		QueueRecord queueRecord = queue.poll();
+		Customer customer = queueRecord.customer;
+
+		//calculate how long the customer waited before service started
+		double waitingTime = Clock.getInstance().getClock() - queueRecord.queueEntryTime;
+
+		//Update waiting time statics
+		totalWaitingTime += waitingTime;
+		customersStartedService++;
 
 		//Generate service time
 		double serviceTime = generator.sample();
+		//Update total service time
+		totalServiceTime += serviceTime;
 
 		//Calculate when this customer's service will finish
 		double completionTime = Clock.getInstance().getClock() + serviceTime;
@@ -170,5 +206,28 @@ public class ServicePoint {
 	//Return the number of customers currently waiting in the queue
 	public int getQueueLength() {
 		return queue.size();
+	}
+
+	//Return average waiting time for this service point
+	public double getAverageWaitingTime() {
+		if (customersStartedService == 0) {
+			return 0;
+		}
+
+		return totalWaitingTime / customersStartedService;
+	}
+
+	//Return maximum queue length reached during the simulation
+	public int getMaximumQueueLength() {
+		return maximumQueueLength;
+	}
+
+	//Return  total service time used at this service point
+	public double getTotalServiceTime() {
+		return totalServiceTime;
+	}
+	//Return number of customers who started service at this service point
+	public int getCustomersStartedService() {
+		return customersStartedService;
 	}
 }
