@@ -248,30 +248,104 @@ public class MyEngine extends Engine {
 		}
 	}
 
-	@Override
-	protected void results() {
-		System.out.println("\n========== SIMULATION RESULTS ==========");
-		System.out.printf("Simulation ended at %.2f minutes%n",
-				Clock.getInstance().getClock());
-		System.out.println("Patients served: " + servedPatients);
 
-		if (servedPatients > 0) {
-			System.out.printf("Average time in hospital: %.2f minutes%n",
-					totalTimeInHospital / servedPatients);
-		} else {
-			System.out.println("Average time in hospital: N/A (no patients served)");
-		}
+    @Override
+    protected void results() {
 
-		System.out.println("Emergency patients served: " + emergencyPatients);
-		System.out.println("Normal patients served: " + normalPatients);
+        // Total simulated time in minutes.
+        double simulationTime = Clock.getInstance().getClock();
 
-		System.out.println("\n---- Service point snapshot (at end of run) ----");
-		for (ServicePoint p : servicePoints) {
-			System.out.println(p.getName()
-					+ " | capacity: " + p.getCapacity()
-					+ " | in service: " + p.getCustomersInService()
-					+ " | still waiting in queue: " + p.getQueueLength());
-		}
-		System.out.println("=========================================\n");
-	}
+        System.out.println("\n========== SIMULATION RESULTS ==========");
+
+        // 1. General simulation results
+        System.out.printf("Simulation ended at: %.2f minutes%n", simulationTime);
+        System.out.println("Patients served: " + servedPatients);
+
+        if (servedPatients > 0) {
+            double averageHospitalTime = totalTimeInHospital / servedPatients;
+
+            System.out.printf(
+                    "Average time in hospital: %.2f minutes%n",
+                    averageHospitalTime
+            );
+        } else {
+            System.out.println(
+                    "Average time in hospital: N/A (no patients served)"
+            );
+        }
+
+        System.out.println("Emergency patients served: " + emergencyPatients);
+        System.out.println("Normal patients served: " + normalPatients);
+
+        // 2. Average waiting time and maximum queue for all service points
+        System.out.println("\n---- SERVICE POINT STATISTICS ----");
+
+        for (ServicePoint p : servicePoints) {
+
+            System.out.printf(
+                    "%-12s | Average waiting: %7.2f min | Maximum queue: %d%n",
+                    p.getName(),
+                    p.getAverageWaitingTime(),
+                    p.getMaximumQueueLength()
+            );
+        }
+
+        // 3. Patient throughput: completed patients per simulated hour
+        System.out.println("\n---- PATIENT THROUGHPUT ----");
+
+        if (simulationTime > 0) {
+
+            double throughput = servedPatients / (simulationTime / 60.0);
+
+            System.out.printf(
+                    "Patient throughput: %.2f patients/hour%n",
+                    throughput
+            );
+
+        } else {
+
+            System.out.println(
+                    "Patient throughput: N/A (simulation time is zero)"
+            );
+        }
+
+        // 4. Doctor utilization
+        System.out.println("\n---- DOCTOR UTILIZATION ----");
+
+        ServicePoint doctor = servicePoints[2];
+
+        if (simulationTime > 0) {
+
+            double doctorUtilization =
+                    (doctor.getTotalServiceTime()
+                            / (simulationTime * doctor.getCapacity())) * 100.0;
+
+            System.out.printf(
+                    "Doctor utilization: %.2f%%%n",
+                    doctorUtilization
+            );
+
+        } else {
+
+            System.out.println(
+                    "Doctor utilization: N/A (simulation time is zero)"
+            );
+        }
+
+        // 5. Service point snapshot at the end of the simulation
+        System.out.println("\n---- SERVICE POINT SNAPSHOT ----");
+
+        for (ServicePoint p : servicePoints) {
+
+            System.out.printf(
+                    "%-12s | Capacity: %d | In service: %d | Waiting now: %d%n",
+                    p.getName(),
+                    p.getCapacity(),
+                    p.getCustomersInService(),
+                    p.getQueueLength()
+            );
+        }
+
+        System.out.println("=========================================\n");
+    }
 }
