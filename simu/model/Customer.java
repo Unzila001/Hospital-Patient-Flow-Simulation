@@ -20,6 +20,7 @@ public class Customer {
 	private static long minorInjury;
 	private static long seriousInjury;
 	private static long illness;
+	private static int completedPatients;
 
 	/**
 	 * Create a unique customer
@@ -129,8 +130,9 @@ public class Customer {
 			Trace.out(Trace.Level.INFO,"Customer "    + id + " didn't have priority.");
 		}
 
-		sum += (removalTime - arrivalTime);
-		double mean = sum/id;
+		completedPatients++;
+		sum += totalHospitalTime;
+		double mean = sum/completedPatients;
 		System.out.printf("Current mean patient time in hospital: %.2f minutes.%n", mean);
 
 		if(patientCondition.equals("minor injury")){
