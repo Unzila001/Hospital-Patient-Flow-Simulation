@@ -132,7 +132,7 @@ public class Customer {
 
 		completedPatients++;
 		sum += totalHospitalTime;
-		double mean = sum/completedPatients;
+		double mean = sum / completedPatients;
 		System.out.printf("Current mean patient time in hospital: %.2f minutes.%n", mean);
 
 		if(patientCondition.equals("minor injury")){
