@@ -61,7 +61,7 @@ public class ServicePoint {
 	private String name;
 	private int capacity;
 	private int customersInService = 0;
-	//Service point statics
+	//Service point statistics
 	private double totalWaitingTime = 0;
 	private int customersStartedService = 0;
 	private int maximumQueueLength = 0;
@@ -137,7 +137,7 @@ public class ServicePoint {
 		//calculate how long the customer waited before service started
 		double waitingTime = Clock.getInstance().getClock() - queueRecord.queueEntryTime;
 
-		//Update waiting time statics
+		//Update waiting time statistics
 		totalWaitingTime += waitingTime;
 		customersStartedService++;
 

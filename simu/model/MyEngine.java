@@ -251,12 +251,13 @@ public class MyEngine extends Engine {
 	@Override
 	protected void results() {
 		System.out.println("\n========== SIMULATION RESULTS ==========");
-		System.out.println("Simulation ended at " + Clock.getInstance().getClock());
+		System.out.printf("Simulation ended at %.2f minutes%n",
+				Clock.getInstance().getClock());
 		System.out.println("Patients served: " + servedPatients);
 
 		if (servedPatients > 0) {
-			System.out.println("Average time in hospital: "
-					+ (totalTimeInHospital / servedPatients));
+			System.out.printf("Average time in hospital: %.2f minutes%n",
+					totalTimeInHospital / servedPatients);
 		} else {
 			System.out.println("Average time in hospital: N/A (no patients served)");
 		}
