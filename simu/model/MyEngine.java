@@ -24,6 +24,13 @@ public class MyEngine extends Engine {
 	public static final boolean FIXEDARRIVALTIMES = false;
 	public static final boolean FXIEDSERVICETIMES = false;
 
+	// ---- statistics collected during the run ----
+	private int servedPatients = 0;
+	private double totalTimeInHospital = 0;
+	private int emergencyPatients = 0;
+	private int normalPatients = 0;
+
+
 	/**
 	 * Service Points and random number generator with different distributions are created here.
 	 * We use exponent distribution for customer arrival times and normal distribution for the
@@ -185,9 +192,7 @@ public class MyEngine extends Engine {
 			} else {
 				// 10%: discharge the patient directly.
 				System.out.println("Doctor -> Direct discharge");
-				a.setRemovalTime(Clock.getInstance().getClock());
-				a.setTotalHospitalTime();
-				a.reportResults();
+				dischargePatient(a);
 			}
 
 			break;
@@ -213,17 +218,31 @@ public class MyEngine extends Engine {
          a = servicePoints[5].removeQueue();
 
          // Potilas poistuu sairaalasta.
-         a.setRemovalTime(Clock.getInstance().getClock());
-         a.setTotalHospitalTime();
-         a.reportResults();
+         dischargePatient(a);
          break;
 	}
 }
 
+	private void dischargePatient(Customer patient) {
+		patient.setRemovalTime(Clock.getInstance().getClock());
+		patient.setTotalHospitalTime();
+		patient.reportResults();
+
+		servedPatients++;
+		totalTimeInHospital += patient.getTotalHospitalTime();
+
+		if (patient.hasPriority()) {
+			emergencyPatients++;
+		} else {
+			normalPatients++;
+		}
+	}
+
 	@Override
 	protected void tryCEvents() {
+		//Generic C phase: starts services while capacity is available
 		for (ServicePoint p: servicePoints){
-			if (!p.isReserved() && p.isOnQueue()){
+			while (p.isOnQueue() && p.hasAvailableCapacity()){
 				p.beginService();
 			}
 		}
@@ -231,7 +250,27 @@ public class MyEngine extends Engine {
 
 	@Override
 	protected void results() {
+		System.out.println("\n========== SIMULATION RESULTS ==========");
 		System.out.println("Simulation ended at " + Clock.getInstance().getClock());
-		System.out.println("Results ... are currently missing");
+		System.out.println("Patients served: " + servedPatients);
+
+		if (servedPatients > 0) {
+			System.out.println("Average time in hospital: "
+					+ (totalTimeInHospital / servedPatients));
+		} else {
+			System.out.println("Average time in hospital: N/A (no patients served)");
+		}
+
+		System.out.println("Emergency patients served: " + emergencyPatients);
+		System.out.println("Normal patients served: " + normalPatients);
+
+		System.out.println("\n---- Service point snapshot (at end of run) ----");
+		for (ServicePoint p : servicePoints) {
+			System.out.println(p.getName()
+					+ " | capacity: " + p.getCapacity()
+					+ " | in service: " + p.getCustomersInService()
+					+ " | still waiting in queue: " + p.getQueueLength());
+		}
+		System.out.println("=========================================\n");
 	}
 }
