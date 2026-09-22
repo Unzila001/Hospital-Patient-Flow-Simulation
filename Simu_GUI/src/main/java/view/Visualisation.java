@@ -19,7 +19,7 @@ public class Visualisation extends Canvas {
 		gc.setFill(Color.YELLOW);
 		gc.fillRect(0, 0, this.getWidth(), this.getHeight());
 	}
-	
+
 	public void newCustomer() {
 		gc.setFill(Color.RED);
 		gc.fillOval(i,j,10,10);
