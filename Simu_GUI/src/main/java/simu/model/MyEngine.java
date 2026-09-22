@@ -14,14 +14,17 @@ public class MyEngine extends Engine {
 
 	public MyEngine(IControllerMtoV controller){ // NEW
 		super(controller); // NEW
-		
-		servicePoints = new ServicePoint[3];
-	
-		servicePoints[0]=new ServicePoint(new Normal(10,6), eventList, EventType.DEP1);
-		servicePoints[1]=new ServicePoint(new Normal(10,10), eventList, EventType.DEP2);
-		servicePoints[2]=new ServicePoint(new Normal(5,3), eventList, EventType.DEP3);
-		
-		arrivalProcess = new ArrivalProcess(new Negexp(15,5), eventList, EventType.ARR1);
+
+		servicePoints = new ServicePoint[6];
+
+		servicePoints[0] = new ServicePoint(new Normal(10,6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity);
+		servicePoints[1] = new ServicePoint(new Normal(10,6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity);
+		servicePoints[2] = new ServicePoint(new Normal(10,6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity);
+		servicePoints[3] = new ServicePoint(new Normal(10,6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity);
+		servicePoints[4] = new ServicePoint(new Normal(10,6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity);
+		servicePoints[5] = new ServicePoint(new Normal(10,6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity);
+
+		arrivalProcess = new ArrivalProcess(new Negexp(15,5), eventList, EventType.ARRIVAL);
 	}
 
 	@Override
@@ -34,28 +37,16 @@ public class MyEngine extends Engine {
 		Customer a;
 
 		switch ((EventType)t.getType()){
-		case ARR1:
+		case ARRIVAL:
 			servicePoints[0].addQueue(new Customer());
 			arrivalProcess.generateNext();
 			controller.visualiseCustomer(); // NEW
 			break;
 
-		case DEP1:
+		case REGISTRATION_COMPLETE:
 			a = servicePoints[0].removeQueue();
-			 servicePoints[1].addQueue(a);
+			servicePoints[1].addQueue(a);
 			break;
-
-		case DEP2:
-			a = servicePoints[1].removeQueue();
-			servicePoints[2].addQueue(a);
-			break;
-
-		case DEP3:
-			a = servicePoints[2].removeQueue();
-			a.setRemovalTime(Clock.getInstance().getTime());
-			a.reportResults();
-			break;
-		}	
 	}
 
 	@Override
