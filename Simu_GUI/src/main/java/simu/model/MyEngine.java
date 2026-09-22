@@ -12,6 +12,14 @@ import simu.framework.Event;
 public class MyEngine extends Engine {
 	private ArrivalProcess arrivalProcess;
 
+	//Service point capacities
+	private final int registrationCapacity = 1;
+	private final int triageCapacity = 1;
+	private final int doctorCapacity = 2;
+	private final int xrayCapacity = 1;
+	private final int laboratoryCapacity = 1;
+	private final int treatmentCapacity = 1;
+
 	public MyEngine(IControllerMtoV controller){ // NEW
 		super(controller); // NEW
 
@@ -36,17 +44,18 @@ public class MyEngine extends Engine {
 	protected void runEvent(Event t) {  // B phase events
 		Customer a;
 
-		switch ((EventType)t.getType()){
-		case ARRIVAL:
-			servicePoints[0].addQueue(new Customer());
-			arrivalProcess.generateNext();
-			controller.visualiseCustomer(); // NEW
-			break;
+		switch ((EventType)t.getType()) {
+			case ARRIVAL:
+				servicePoints[0].addQueue(new Customer());
+				arrivalProcess.generateNext();
+				controller.visualiseCustomer(); // NEW
+				break;
 
-		case REGISTRATION_COMPLETE:
-			a = servicePoints[0].removeQueue();
-			servicePoints[1].addQueue(a);
-			break;
+			case REGISTRATION_COMPLETE:
+				a = servicePoints[0].removeQueue();
+				servicePoints[1].addQueue(a);
+				break;
+		}
 	}
 
 	@Override
