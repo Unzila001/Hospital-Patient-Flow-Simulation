@@ -21,6 +21,12 @@ public class ServicePoint {
 	private String name;
 	private int capacity;
 	private int customersInService = 0;
+    // Statistics needed by Alex's MyEngine results()
+    private double totalWaitingTime = 0;
+    private int customersStartedService = 0;
+    private int maximumQueueLength = 0;
+    private double totalServiceTime = 0;
+    private final java.util.Map<Customer, Double> queueEntryTimes = new java.util.IdentityHashMap<>();
 
 	//Store customers currently being served and their completion times
 	private static class CustomerInService {
@@ -49,6 +55,7 @@ public class ServicePoint {
 	//Add patient to the waiting queue
 	//Priority customers are placed before non-priority customers
 	public void addQueue(Customer customer){
+        queueEntryTimes.put(customer, Clock.getInstance().getTime());
 		if (customer.hasPriority()) {
 			int position = 0;
 
@@ -62,6 +69,7 @@ public class ServicePoint {
 			//Normal customer will join the end of the queue
 			jono.addLast(customer);
 		}
+	    maximumQueueLength = Math.max(maximumQueueLength, jono.size());
 	}
 
 	//Remove and return the customer whose service has been completed
@@ -92,9 +100,13 @@ public class ServicePoint {
 
 			//Remove the first waiting customer
 			Customer customer = jono.poll();
+            Double entered = queueEntryTimes.remove(customer);
+            if (entered != null) totalWaitingTime += Clock.getInstance().getTime() - entered;
+            customersStartedService++;
 
 			//Generate service time
 			double serviceTime = generator.sample();
+            totalServiceTime += serviceTime;
 
 			//calculate when this customer's service will finish
 			double completionTime = Clock.getInstance().getTime() + serviceTime;
@@ -135,4 +147,8 @@ public class ServicePoint {
 	public int getCapacity() {		//Return the maximum service capacity
 		return capacity;
 	}
+    public double getAverageWaitingTime() { return customersStartedService == 0 ? 0 : totalWaitingTime / customersStartedService; }
+    public int getMaximumQueueLength() { return maximumQueueLength; }
+    public double getTotalServiceTime() { return totalServiceTime; }
+    public int getQueueLength() { return jono.size(); }
 }

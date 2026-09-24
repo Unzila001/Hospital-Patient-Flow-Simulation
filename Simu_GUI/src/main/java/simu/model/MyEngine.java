@@ -10,61 +10,187 @@ import simu.framework.Event;
 
 
 public class MyEngine extends Engine {
-	private ArrivalProcess arrivalProcess;
+    private ArrivalProcess arrivalProcess;
 
-	//Service point capacities
-	private final int registrationCapacity = 1;
-	private final int triageCapacity = 1;
-	private final int doctorCapacity = 2;
-	private final int xrayCapacity = 1;
-	private final int laboratoryCapacity = 1;
-	private final int treatmentCapacity = 1;
+    // Simulation results
+    private int servedPatients = 0;
+    private double totalTimeInHospital = 0;
+    private int emergencyPatients = 0;
+    private int normalPatients = 0;
 
-	public MyEngine(IControllerMtoV controller){ // NEW
-		super(controller); // NEW
+    //Service point capacities
+    private final int registrationCapacity = 1;
+    private final int triageCapacity = 1;
+    private final int doctorCapacity = 2;
+    private final int xrayCapacity = 1;
+    private final int laboratoryCapacity = 1;
+    private final int treatmentCapacity = 1;
 
-		servicePoints = new ServicePoint[6];
+    public MyEngine(IControllerMtoV controller) { // NEW
+        super(controller); // NEW
 
-		servicePoints[0] = new ServicePoint(new Normal(10,6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity);
-		servicePoints[1] = new ServicePoint(new Normal(10,6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity);
-		servicePoints[2] = new ServicePoint(new Normal(10,6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity);
-		servicePoints[3] = new ServicePoint(new Normal(10,6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity);
-		servicePoints[4] = new ServicePoint(new Normal(10,6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity);
-		servicePoints[5] = new ServicePoint(new Normal(10,6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity);
+        servicePoints = new ServicePoint[6];
 
-		arrivalProcess = new ArrivalProcess(new Negexp(15,5), eventList, EventType.ARRIVAL);
-	}
+        servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity);
+        servicePoints[1] = new ServicePoint(new Normal(10, 6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity);
+        servicePoints[2] = new ServicePoint(new Normal(10, 6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity);
+        servicePoints[3] = new ServicePoint(new Normal(10, 6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity);
+        servicePoints[4] = new ServicePoint(new Normal(10, 6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity);
+        servicePoints[5] = new ServicePoint(new Normal(10, 6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity);
 
-	@Override
-	protected void initialization() {
-		arrivalProcess.generateNext();	 // First arrival in the system
-	}
+        arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARRIVAL);
+    }
 
-	@Override
-	protected void runEvent(Event t) {  // B phase events
-		Customer a;
+    @Override
+    protected void initialization() {
+        arrivalProcess.generateNext();     // First arrival in the system
+    }
 
-		switch ((EventType)t.getType()) {
-			case ARRIVAL:
-				servicePoints[0].addQueue(new Customer());
-				arrivalProcess.generateNext();
-				controller.visualiseCustomer(); // NEW
-				break;
+    @Override
+    protected void runEvent(Event t) {  // B phase events
+        Customer a;
 
-			case REGISTRATION_COMPLETE:
-				a = servicePoints[0].removeQueue();
-				servicePoints[1].addQueue(a);
-				break;
-		}
-	}
+        switch ((EventType) t.getType()) {
+            case ARRIVAL:
+                servicePoints[0].addQueue(new Customer());
+                arrivalProcess.generateNext();
+                controller.visualiseCustomer(); // NEW
+                break;
 
-	@Override
-	protected void results() {
-		// OLD text UI
-		//System.out.println("Simulation ended at " + Clock.getInstance().getClock());
-		//System.out.println("Results ... are currently missing");
+            case REGISTRATION_COMPLETE:
+                a = servicePoints[0].removeQueue();
+                servicePoints[1].addQueue(a);
+                break;
 
-		// NEW GUI
-		controller.showEndTime(Clock.getInstance().getTime());
-	}
+            case TRIAGE_COMPLETE:
+                a = servicePoints[1].removeQueue();
+                servicePoints[2].addQueue(a);
+                break;
+
+            case DOCTOR_COMPLETE:
+                a = servicePoints[2].removeQueue();
+
+                int destination = (int) (Math.random() * 100);
+
+                if (destination < 30) {
+                    // 30 %: laboratorio
+                    servicePoints[4].addQueue(a);
+
+                } else if (destination < 50) {
+                    // 20 %: röntgen
+                    servicePoints[3].addQueue(a);
+
+                } else if (destination < 90) {
+                    // 40 %: hoito
+                    servicePoints[5].addQueue(a);
+
+                } else {
+                    // 10 %: potilas poistuu sairaalasta
+                    a.setRemovalTime(Clock.getInstance().getTime());
+                    a.setTotalHospitalTime();
+                    a.reportResults();
+                    recordCompletedPatient(a);
+                }
+                break;
+
+            case LABORATORY_COMPLETE:
+                a = servicePoints[4].removeQueue();
+                a.setRemovalTime(Clock.getInstance().getTime());
+                a.setTotalHospitalTime();
+                a.reportResults();
+                recordCompletedPatient(a);
+                break;
+
+            case XRAY_COMPLETE:
+                a = servicePoints[3].removeQueue();
+                a.setRemovalTime(Clock.getInstance().getTime());
+                a.setTotalHospitalTime();
+                a.reportResults();
+                recordCompletedPatient(a);
+                break;
+
+            case TREATMENT_COMPLETE:
+                a = servicePoints[5].removeQueue();
+                a.setRemovalTime(Clock.getInstance().getTime());
+                a.setTotalHospitalTime();
+                a.reportResults();
+                recordCompletedPatient(a);
+                break;
+        }
+    }
+
+    private void recordCompletedPatient(Customer patient) {
+        servedPatients++;
+        totalTimeInHospital += patient.getTotalHospitalTime();
+
+        if (patient.hasPriority()) {
+            emergencyPatients++;
+        } else {
+            normalPatients++;
+        }
+    }
+
+    @Override
+    protected void results() {
+        double simulationTime = Clock.getInstance().getTime();
+
+        // Säilytetään yhteys GUI-käyttöliittymään.
+        controller.showEndTime(simulationTime);
+
+        System.out.println("\n========== SIMULATION RESULTS ==========");
+
+        // 1. Hoidetut potilaat
+        System.out.println("Patients served: " + servedPatients);
+
+        // 2. Keskimääräinen sairaalassaoloaika
+        double averageHospitalTime = servedPatients == 0
+                ? 0
+                : totalTimeInHospital / servedPatients;
+
+        System.out.printf(
+                "Average time in hospital: %.2f minutes%n",
+                averageHospitalTime
+        );
+
+        // 3. Potilaita tunnissa
+        double patientsPerHour = simulationTime <= 0
+                ? 0
+                : servedPatients / (simulationTime / 60.0);
+
+        System.out.printf(
+                "Patients per hour: %.2f%n",
+                patientsPerHour
+        );
+
+        // 4. Lääkärin käyttöaste
+        ServicePoint doctor = servicePoints[2];
+
+        double doctorUtilization = simulationTime <= 0
+                ? 0
+                : doctor.getTotalServiceTime()
+                / (simulationTime * doctor.getCapacity()) * 100;
+
+        System.out.printf(
+                "Doctor utilization: %.2f%%%n",
+                doctorUtilization
+        );
+
+        // 5. Jokaisen palvelupisteen tilastot
+        System.out.println("\n--- SERVICE POINT STATISTICS ---");
+
+        for (ServicePoint point : servicePoints) {
+            System.out.println("\n" + point.getName());
+
+            System.out.printf(
+                    "Average waiting time: %.2f minutes%n",
+                    point.getAverageWaitingTime()
+            );
+
+            System.out.println(
+                    "Maximum queue length: " + point.getMaximumQueueLength()
+            );
+        }
+
+        System.out.println("\n========================================");
+    }
 }
