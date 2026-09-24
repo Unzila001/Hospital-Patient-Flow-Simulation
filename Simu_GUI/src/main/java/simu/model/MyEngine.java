@@ -46,9 +46,11 @@ public class MyEngine extends Engine {
 
 		switch ((EventType)t.getType()) {
 			case ARRIVAL:
-				servicePoints[0].addQueue(new Customer());
+				Customer newCustomer = new Customer();
+				servicePoints[0].addQueue(newCustomer);
 				arrivalProcess.generateNext();
-				controller.visualiseCustomer(); // NEW
+
+				controller.visualiseCustomer(newCustomer.getId()); // NEW
 				break;
 
 			case REGISTRATION_COMPLETE:
