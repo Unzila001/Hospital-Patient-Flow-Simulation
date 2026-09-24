@@ -32,7 +32,14 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 	private Label timeLabel;
 	private Label delayLabel;
 	private Label resultLabel;
-	
+
+	private Label patientsServedValue;
+	private Label waitingTimeValue;
+	private Label hospitalTimeValue;
+	private Label queueInfoValue;
+	private Label throughputValue;
+	private Label doctorUtilizationValue;
+
 	private Button startButton;
 	private Button slowButton;
 	private Button speedUpButton;
@@ -108,13 +115,46 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 	        grid.add(startButton,0, 3);
 	        grid.add(speedUpButton, 0, 4);
 	        grid.add(slowButton, 1, 4);
+
+			Label statisticsTitle = new Label("Results / Statistics");
+			statisticsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 20));
+
+			patientsServedValue = new Label("-");
+			waitingTimeValue = new Label("-");
+			hospitalTimeValue = new Label("-");
+			queueInfoValue = new Label("-");
+			throughputValue = new Label("-");
+			doctorUtilizationValue = new Label("-");
+
+			GridPane statisticsGrid = new GridPane();
+			statisticsGrid.setHgap(15);
+			statisticsGrid.setVgap(10);
+			statisticsGrid.setPadding(new Insets(15));
+
+			statisticsGrid.add(statisticsTitle, 0, 0, 2, 1);
+			statisticsGrid.add(new Label("Patients served:"), 0, 1);
+			statisticsGrid.add(patientsServedValue, 1, 1);
+
+			statisticsGrid.add(new Label("Average waiting time:"), 0, 2);
+			statisticsGrid.add(waitingTimeValue, 1, 2);
+
+			statisticsGrid.add(new Label("Average hospital time:"), 0, 3);
+			statisticsGrid.add(hospitalTimeValue, 1, 3);
+
+			statisticsGrid.add(new Label("Queue information:"), 0, 4);
+			statisticsGrid.add(queueInfoValue, 1, 4);
+
+			statisticsGrid.add(new Label("Throughput:"), 0, 5);
+			statisticsGrid.add(throughputValue, 1, 5);
+
+			statisticsGrid.add(new Label("Doctor utilization:"), 0, 6);
+			statisticsGrid.add(doctorUtilizationValue, 1, 6);
 	        
-	        display = new Visualisation2(400,200);
+	        display = new Visualisation2(700,400);
 			//display = new Visualisation2(400,200);
 
 	        // Fill the box:
-	        hBox.getChildren().addAll(grid, (Canvas) display);
-	        
+			hBox.getChildren().addAll(grid, (Canvas) display, statisticsGrid);
 	        Scene scene = new Scene(hBox);
 	        primaryStage.setScene(scene);
 	        primaryStage.show();
@@ -138,6 +178,30 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 	public void setEndingTime(double time) {
 		 DecimalFormat formatter = new DecimalFormat("#0.00");
 		 this.results.setText(formatter.format(time));
+	}
+
+	public void setPatientsServed(int patients) {
+		patientsServedValue.setText(String.valueOf(patients));
+	}
+
+	public void setWaitingTime(double waitingTime) {
+		waitingTimeValue.setText(String.format("%.2f min", waitingTime));
+	}
+
+	public void setHospitalTime(double hospitalTime) {
+		hospitalTimeValue.setText(String.format("%.2f min", hospitalTime));
+	}
+
+	public void setQueueInfo(String queueInfo) {
+		queueInfoValue.setText(queueInfo);
+	}
+
+	public void setThroughput(double throughput) {
+		throughputValue.setText(String.format("%.2f patients/hour", throughput));
+	}
+
+	public void setDoctorUtilization(double utilization) {
+		doctorUtilizationValue.setText(String.format("%.2f %%", utilization));
 	}
 
 	@Override
