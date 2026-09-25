@@ -98,18 +98,12 @@ public class MyEngine extends Engine {
 
             case LABORATORY_COMPLETE:
                 a = servicePoints[4].removeQueue();
-                a.setRemovalTime(Clock.getInstance().getTime());
-                a.setTotalHospitalTime();
-                a.reportResults();
-                recordCompletedPatient(a);
+                servicePoints[5].addQueue(a);
                 break;
 
             case XRAY_COMPLETE:
                 a = servicePoints[3].removeQueue();
-                a.setRemovalTime(Clock.getInstance().getTime());
-                a.setTotalHospitalTime();
-                a.reportResults();
-                recordCompletedPatient(a);
+                servicePoints[5].addQueue(a);
                 break;
 
             case TREATMENT_COMPLETE:
