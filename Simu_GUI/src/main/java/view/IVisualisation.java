@@ -12,7 +12,7 @@ public interface IVisualisation {
 	void moveCustomer(int customerId, String location);
 
 	//Update whether the patient is waiting or being served
-	void updatePatientState(int customerId, String state);
+	void updatePatientState(int customerId, String condition, boolean priority);
 
 	//Remove the customer from visualization after discharge
 	void removeCustomer(int customerId);

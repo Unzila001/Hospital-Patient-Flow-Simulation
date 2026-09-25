@@ -4,13 +4,26 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.geometry.VPos;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.image.Image;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Visualisation2 extends Canvas implements IVisualisation {
 	private GraphicsContext gc;
+	private Image patientImage;
+
+	//Store the current location of every patient
+	private Map<Integer, String> patientLocations = new HashMap<>();
+	private int latestCustomerId = -1;
 
 	public Visualisation2(int w, int h) {
 		super(w, h);
 		gc = this.getGraphicsContext2D();
+
+		patientImage = new Image(getClass().getResource("/images/patient1.png").toExternalForm());
+
 		clearDisplay();
 	}
 
@@ -46,24 +59,57 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 
 		drawArrow(505, 240, 505, 290); 	//Treatment -> Exit
 		drawDirectDischargeRoute();
+
+		//Customer information panel
+		gc.setFill(Color.web("#F7F9F7"));
+		gc.fillRect(20, 370, 650, 105);
+
+		//Panel border
+		gc.setStroke(Color.web("#53635A"));
+		gc.setLineWidth(1.5);
+		gc.strokeRect(20, 370, 650, 105);
+
+		//Panel title
+		gc.setFill(Color.web("#53635A"));
+		gc.setFont(new Font(16));
+		gc.fillText("Customer Information", 35, 397);
+
+		//Separator line
+		gc.setStroke(Color.web("#C7D2CA"));
+		gc.setLineWidth(1);
+		gc.strokeLine(35, 407, 655, 407);
+
+		//Initial information
+		gc.setFill(Color.DARKGRAY);
+		gc.setFont(new Font(14));
+		gc.fillText("Waiting for patient arrival...", 35, 435);
 	}
 
 	//Draw one hospital service point
 	private void drawServicePoint(String name, double x, double y, double width, double height) {
 
-		//Box background
-		gc.setFill(Color.LIGHTBLUE);
+		//Soft hospital style background
+		gc.setFill(Color.web("#E8EFEA"));
 		gc.fillRect(x, y, width, height);
 
 		//Box border
-		gc.setStroke(Color.BLACK);
+		gc.setStroke(Color.web("#53635A"));
 		gc.setLineWidth(2);
 		gc.strokeRect(x, y, width, height);
 
-		//Service point names
+		//Service point text
 		gc.setFill(Color.BLACK);
 		gc.setFont(new Font(16));
-		gc.fillText(name, x + 10, y + 25);
+
+		//Center text
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.setTextBaseline(VPos.CENTER);
+
+		gc.fillText(name, x + width / 2, y + height / 2 );
+
+		//Reset text setting form other text on canvas
+		gc.setTextAlign(TextAlignment.LEFT);
+		gc.setTextBaseline(VPos.BASELINE);
 	}
 
 	//Draw arrow between hospital service points
@@ -158,23 +204,217 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	}
 	@Override
 	public void newCustomer(int customerId) {
-		gc.setFill(Color.RED);
-		gc.setFont(new Font(20));
-		gc.fillText("Customer " + customerId, 100, 100);
+
+		//Store new patient location
+		patientLocations.put(customerId, "Arrival");
+		latestCustomerId = customerId;
+
+		//Clear previous customer information
+		gc.setFill(Color.web("#F7F9F7"));
+		gc.fillRect(30, 412, 625, 55);
+
+		//Arrival Label
+		gc.setFill(Color.DARKGRAY);
+		gc.setFont(new Font(14));
+		gc.fillText("Latest arrival:", 35, 435);
+
+		//Customer ID
+		gc.setFill(Color.web("#53635A"));
+		gc.setFont(new Font(16));
+		gc.fillText("Customer #" + customerId, 135, 435);
+
+		//Current location label
+		gc.setFill(Color.DARKGRAY);
+		gc.setFont(new Font(14));
+		gc.fillText("Location:", 330, 435);
+
+		//Current location
+		gc.setFill(Color.web("#53635A"));
+		gc.setFont(new Font(16));
+		gc.fillText("Arrival", 400, 435);
+
+		//condition label
+		gc.setFill(Color.DARKGRAY);
+		gc.setFont(new Font(14));
+		gc.fillText("Condition:", 35, 460);
+
+		//Condition value
+		gc.setFill(Color.web("#53635A"));
+		gc.setFont(new Font(14));
+		gc.fillText("Not assigned yet", 135, 460);
+
+		//Priority label
+		gc.setFill(Color.DARKGRAY);
+		gc.setFont(new Font(14));
+		gc.fillText("Priority:", 330, 460);
+
+		//Priority value
+		gc.setFill(Color.web("#53635A"));
+		gc.setFont(new Font(14));
+		gc.fillText("Not assigned yet", 400, 460);
+
+		//Redraw all patients after customer information is updates
+		refreshPatients();
+	}
+
+	//Draw customer marker at a service point
+	private void drawCustomerMarker (int customerId, double x, double y) {
+
+		gc.setFill(Color.DARKRED);
+		gc.fillOval(x, y, 24, 24);
+
+		gc.setFill(Color.WHITE);
+		gc.setFont(new Font(11));
+
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.setTextBaseline(VPos.CENTER);
+
+		gc.fillText(String.valueOf(customerId), x + 12, y + 12);
+
+		//Reset text Settings
+		gc.setTextAlign(TextAlignment.LEFT);
+		gc.setTextBaseline(VPos.BASELINE);
 	}
 
 	@Override
 	public void moveCustomer(int customerId, String location) {
-		//Patient movement will be implemented later
+
+		//Update patient's current location
+		patientLocations.put(customerId, location);
+
+		//Draw patient at the new location
+		refreshPatients();
+
+		//Update Customer Information only if this is the latest customer
+		if (customerId == latestCustomerId) {
+
+			//Clear old location value
+			gc.setFill(Color.web("#F7F9F7"));
+			gc.fillRect(395, 415, 250, 30);
+
+			//Write new location
+			gc.setFill(Color.web("#53635A"));
+			gc.setFont(new Font(16));
+			gc.fillText(location, 400, 435);
+		}
 	}
 
 	@Override
-	public void updatePatientState(int customerId, String state) {
-		//Patient state visualization will be implemented later
+	public void updatePatientState(int customerId, String condition, boolean priority) {
+		//Only update Customer Information for the latest customer
+		if (customerId == latestCustomerId) {
+
+			//Clear the complete condition / priority row
+			gc.setFill(Color.web("#F7F9F7"));
+			gc.fillRect(30, 442, 625, 25);
+
+			//Condition label
+			gc.setFill(Color.DARKGRAY);
+			gc.setFont(new Font(14));
+			gc.fillText("Condition:", 35, 460);
+
+			//Condition value
+			gc.setFill(Color.web("#53635A"));
+			gc.setFont((new Font(14)));
+			gc.fillText(condition, 135, 460);
+
+			//Priority label
+			gc.setFill(Color.DARKGRAY);
+			gc.setFont(new Font(14));
+			gc.fillText("Priority:", 330, 460);
+
+			//Priority value
+			gc.setFill(Color.web("#53635A"));
+			gc.setFont((new Font(14)));
+			gc.fillText(priority ? "Yes" : "No", 400, 460);
+		}
 	}
 
 	@Override
 	public void removeCustomer(int customerId) {
 		//Patient removal will be implemented later
+	}
+
+	private void drawPatient(int customerId, String location) {
+		double x;
+		double y;
+
+		switch (location) {
+			case "Arrival":
+				x = 25;
+				y = 85;
+				break;
+
+			case "Registration":
+				x = 145;
+				y = 85;
+				break;
+
+			case "Triage":
+				x = 295;
+				y = 85;
+				break;
+
+			case "Doctor":
+				x =445;
+				y = 85;
+				break;
+
+			case "Laboratory":
+				x = 145;
+				y = 195;
+				break;
+
+			case "X-ray":
+				x = 295;
+				y = 195;
+				break;
+
+			case "Treatment":
+				x = 445;
+				y = 195;
+				break;
+
+			case "Exit":
+				x = 445;
+				y = 305;
+				break;
+
+			default:
+				return;
+		}
+		gc.drawImage(patientImage, x, y, 18, 32);
+	}
+
+	//Refresh patient
+	private void refreshPatients() {
+
+		//Redraw all service-point boxes
+		//This method will remove patient figures from their previous positions
+		drawServicePoint("Arrival", 20, 70, 100, 60);
+		drawServicePoint("Registration", 140, 70, 130, 60);
+		drawServicePoint("Triage", 290, 70, 130, 60);
+		drawServicePoint("Doctor", 440, 70, 130, 60);
+
+		drawServicePoint("Laboratory", 140, 180, 130, 60);
+		drawServicePoint("X-ray", 290, 180, 130, 60);
+		drawServicePoint("Treatment", 440, 180, 130, 60);
+		drawServicePoint("Exit", 440, 290, 130, 60);
+
+		//Redraw all arrows and routes
+		drawArrow(120, 100, 140, 100);		//Arrival -> Registration
+		drawArrow(270, 100, 290, 100);		//Registration -> Triage
+		drawArrow(420, 100, 440, 100);		//Triage -> Doctor
+
+		drawDoctorRoutes();
+		drawTreatmentRoutes();
+
+		drawArrow(505, 240, 505, 290);		//Treatment -> Exit
+		drawDirectDischargeRoute();
+
+		//Redraw every patient at their current location
+		for (Map.Entry<Integer, String> patient : patientLocations.entrySet()) {
+			drawPatient(patient.getKey(), patient.getValue());
+		}
 	}
 }

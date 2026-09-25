@@ -4,4 +4,6 @@ package controller;
 public interface IControllerMtoV {
 		public void showEndTime(double time);
 		public void visualiseCustomer(int customerId);
+		public void moveCustomer(int customerId, String location);
+		public void updatePatientState(int customerId, String condition, boolean priority);
 }

@@ -54,15 +54,25 @@ public class MyEngine extends Engine {
             case ARRIVAL:
                 Customer newCustomer = new Customer();
 
-                servicePoints[0].addQueue(newCustomer);
-                arrivalProcess.generateNext();
+                //Show the new patient arriving
+                controller.visualiseCustomer(newCustomer.getId());
 
-                controller.visualiseCustomer(newCustomer.getId()); // NEW
+                //Patient enters the Registration queue
+                servicePoints[0].addQueue(newCustomer);
+
+                //Move patient visually to Registration
+                controller.moveCustomer(newCustomer.getId(), "Registration");
+
+                //Generate next arrival
+                arrivalProcess.generateNext();
                 break;
 
             case REGISTRATION_COMPLETE:
                 a = servicePoints[0].removeQueue();
                 servicePoints[1].addQueue(a);
+
+                //Move patient visually to Triage
+                controller.moveCustomer(a.getId(), "Triage");
                 break;
 
             case TRIAGE_COMPLETE:
@@ -87,8 +97,19 @@ public class MyEngine extends Engine {
                     a.setPriority(true);
                 }
 
+                //Update condition and priority in visualization
+                controller.updatePatientState(
+                        a.getId(),
+                        a.getPatientCondition(),
+                        a.hasPriority()
+                );
+
                 //Move patient from Triage to Doctor
                 servicePoints[2].addQueue(a);
+
+                //Update visualization
+                controller.moveCustomer(a.getId(), "Doctor");
+
                 break;
 
             case DOCTOR_COMPLETE:

@@ -47,4 +47,19 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
 	public void visualiseCustomer(int customerId) {
 		Platform.runLater(() -> ui.getVisualisation().newCustomer(customerId));
 	}
+
+	@Override
+	public void moveCustomer(int customerId, String location) {
+		Platform.runLater(() ->
+				ui.getVisualisation().moveCustomer(customerId, location));
+	}
+
+	@Override
+	public void updatePatientState(int customerId, String condition, boolean priority) {
+		Platform.runLater(() ->
+				ui.getVisualisation().updatePatientState(
+						customerId,
+						condition,
+						priority));
+	}
 }
