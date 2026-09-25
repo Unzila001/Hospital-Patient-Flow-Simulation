@@ -67,6 +67,27 @@ public class MyEngine extends Engine {
 
             case TRIAGE_COMPLETE:
                 a = servicePoints[1].removeQueue();
+
+                //Assign patient condition during triage
+                int condition = (int) (Math.random() * 100);
+
+                if (condition < 50) {
+                    //50% illness
+                    a.setPatientCondition("illness");
+                    a.setPriority(false);
+
+                } else if (condition < 80) {
+                    //30% minor injury
+                    a.setPatientCondition("minor injury");
+                    a.setPriority(false);
+
+                } else {
+                    //20% serious injury
+                    a.setPatientCondition("serious injury");
+                    a.setPriority(true);
+                }
+
+                //Move patient from Triage to Doctor
                 servicePoints[2].addQueue(a);
                 break;
 
