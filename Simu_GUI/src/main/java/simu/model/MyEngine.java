@@ -54,7 +54,7 @@ public class MyEngine extends Engine {
             case ARRIVAL:
                 Customer newCustomer = new Customer();
 
-                servicePoints[0].addQueue(new Customer());
+                servicePoints[0].addQueue(newCustomer);
                 arrivalProcess.generateNext();
 
                 controller.visualiseCustomer(newCustomer.getId()); // NEW
