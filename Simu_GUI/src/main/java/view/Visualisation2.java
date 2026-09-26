@@ -29,6 +29,11 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 
 	@Override
 	public void clearDisplay() {
+
+		//Reset patient data for a new simulation
+		patientLocations.clear();
+		latestCustomerId = -1;
+
 		//Clear the complete canvas
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -257,25 +262,6 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		refreshPatients();
 	}
 
-	//Draw customer marker at a service point
-	private void drawCustomerMarker (int customerId, double x, double y) {
-
-		gc.setFill(Color.DARKRED);
-		gc.fillOval(x, y, 24, 24);
-
-		gc.setFill(Color.WHITE);
-		gc.setFont(new Font(11));
-
-		gc.setTextAlign(TextAlignment.CENTER);
-		gc.setTextBaseline(VPos.CENTER);
-
-		gc.fillText(String.valueOf(customerId), x + 12, y + 12);
-
-		//Reset text Settings
-		gc.setTextAlign(TextAlignment.LEFT);
-		gc.setTextBaseline(VPos.BASELINE);
-	}
-
 	@Override
 	public void moveCustomer(int customerId, String location) {
 
@@ -332,7 +318,11 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 
 	@Override
 	public void removeCustomer(int customerId) {
-		//Patient removal will be implemented later
+		//Remove patient from visualization
+		patientLocations.remove(customerId);
+
+		//redraw remaining patients
+		refreshPatients();
 	}
 
 	private void drawPatient(int customerId, String location) {
