@@ -15,6 +15,7 @@ import java.util.Map;
 public class Visualisation2 extends Canvas implements IVisualisation {
 	private GraphicsContext gc;
 	private Image patientImage;
+	private Image priorityPatientImage;
 
 	//Store the current location of every patient
 	private Map<Integer, PatientVisualisation> patients = new HashMap<>();
@@ -25,6 +26,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		gc = this.getGraphicsContext2D();
 
 		patientImage = new Image(getClass().getResource("/images/patient1.png").toExternalForm());
+		priorityPatientImage = new Image(getClass().getResource("/images/patientPriority.png").toExternalForm());
 
 		clearDisplay();
 	}
@@ -302,6 +304,10 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 
 	@Override
 	public void updatePatientState(int customerId, String condition, boolean priority) {
+		// changing customer priority
+		PatientVisualisation patient = patients.get(customerId);
+		patient.changePriority(priority);
+
 		//Only update Customer Information for the latest customer
 		if (customerId == latestCustomerId) {
 
@@ -341,6 +347,8 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	}
 
 	private void drawPatient(int customerId, String location) {
+		PatientVisualisation patient = patients.get(customerId);
+
 		double x;
 		double y;
 
@@ -388,7 +396,11 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 			default:
 				return;
 		}
-		gc.drawImage(patientImage, x, y, 18, 32);
+		if(patient.getPriority()) {
+			gc.drawImage(priorityPatientImage, x, y, 18, 32);
+		} else {
+			gc.drawImage(patientImage, x, y, 18, 32);
+		}
 	}
 
 	//Refresh patient

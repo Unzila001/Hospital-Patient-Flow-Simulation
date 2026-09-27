@@ -5,8 +5,9 @@ import simu.model.Customer;
 public class PatientVisualisation {
 
     private Customer customer;
-
     private String patientLocation;
+    private boolean isWaiting = true;
+    private boolean hasPriority = false;
 
     public PatientVisualisation(Customer customer){
         this.customer = customer;
@@ -25,4 +26,15 @@ public class PatientVisualisation {
         patientLocation = location;
     }
 
+    public void changeWaitingStatus(boolean status){
+        isWaiting = status;
+    }
+
+    public boolean showWaitingStatus() { return isWaiting; }
+
+    public boolean getPriority() { return hasPriority; }
+
+    public void changePriority(boolean priority){
+        hasPriority = priority;
+    }
 }
