@@ -2,6 +2,7 @@ package controller;
 
 import javafx.application.Platform;
 import simu.framework.IEngine;
+import simu.model.Customer;
 import simu.model.MyEngine;
 import view.ISimulatorUI;
 
@@ -44,8 +45,8 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
 	}
 
 	@Override
-	public void visualiseCustomer(int customerId) {
-		Platform.runLater(() -> ui.getVisualisation().newCustomer(customerId));
+	public void visualiseCustomer(Customer customer) {
+		Platform.runLater(() -> ui.getVisualisation().newCustomer(customer));
 	}
 
 	@Override

@@ -55,7 +55,7 @@ public class MyEngine extends Engine {
                 Customer newCustomer = new Customer();
 
                 //Show the new patient arriving
-                controller.visualiseCustomer(newCustomer.getId());
+                controller.visualiseCustomer(newCustomer);
 
                 //Patient enters the Registration queue
                 servicePoints[0].addQueue(newCustomer);

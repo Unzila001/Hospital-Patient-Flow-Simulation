@@ -7,6 +7,8 @@ import javafx.scene.text.Font;
 import javafx.geometry.VPos;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.image.Image;
+import simu.model.Customer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	private Image patientImage;
 
 	//Store the current location of every patient
-	private Map<Integer, String> patientLocations = new HashMap<>();
+	private Map<Integer, PatientVisualisation> patients = new HashMap<>();
 	private int latestCustomerId = -1;
 
 	public Visualisation2(int w, int h) {
@@ -31,7 +33,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	public void clearDisplay() {
 
 		//Reset patient data for a new simulation
-		patientLocations.clear();
+		patients.clear();
 		latestCustomerId = -1;
 
 		//Clear the complete canvas
@@ -208,11 +210,17 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		drawArrow(620, 320, 570, 320);
 	}
 	@Override
-	public void newCustomer(int customerId) {
+	public void newCustomer(Customer customer) {
 
 		//Store new patient location
-		patientLocations.put(customerId, "Arrival");
-		latestCustomerId = customerId;
+		PatientVisualisation patientVisualisation = new PatientVisualisation(customer);
+
+		patients.put(
+				patientVisualisation.getPatientId(),
+				patientVisualisation
+		);
+
+		latestCustomerId = patientVisualisation.getPatientId();
 
 		//Clear previous customer information
 		gc.setFill(Color.web("#F7F9F7"));
@@ -226,7 +234,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		//Customer ID
 		gc.setFill(Color.web("#53635A"));
 		gc.setFont(new Font(16));
-		gc.fillText("Customer #" + customerId, 135, 435);
+		gc.fillText("Customer #" + patientVisualisation.getPatientId(), 135, 435);
 
 		//Current location label
 		gc.setFill(Color.DARKGRAY);
@@ -266,7 +274,14 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	public void moveCustomer(int customerId, String location) {
 
 		//Update patient's current location
-		patientLocations.put(customerId, location);
+		PatientVisualisation patient = patients.get(customerId);
+
+		if(patient == null){
+			return;
+		}
+
+		//Update patients current location
+		patient.setPatientLocation(location);
 
 		//Draw patient at the new location
 		refreshPatients();
@@ -319,7 +334,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	@Override
 	public void removeCustomer(int customerId) {
 		//Remove patient from visualization
-		patientLocations.remove(customerId);
+		patients.remove(customerId);
 
 		//redraw remaining patients
 		refreshPatients();
@@ -403,8 +418,8 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		drawDirectDischargeRoute();
 
 		//Redraw every patient at their current location
-		for (Map.Entry<Integer, String> patient : patientLocations.entrySet()) {
-			drawPatient(patient.getKey(), patient.getValue());
+		for (PatientVisualisation patient : patients.values()) {
+			drawPatient(patient.getPatientId(), patient.getPatientLocation());
 		}
 	}
 }

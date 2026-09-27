@@ -1,12 +1,14 @@
 package view;
 
+import simu.model.Customer;
+
 public interface IVisualisation {
 
 	//Clear the hospital visualization when a new simulation starts
 	void clearDisplay();
 
 	//Show a newly arrived patient
-	void newCustomer(int customerId);
+	void newCustomer(Customer customer);
 
 	//Move an existing patient to another hospital service point
 	void moveCustomer(int customerId, String location);
