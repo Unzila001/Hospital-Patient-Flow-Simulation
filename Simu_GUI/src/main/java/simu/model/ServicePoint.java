@@ -58,6 +58,9 @@ public class ServicePoint {
 	//Add patient to the waiting queue
 	//Priority customers are placed before non-priority customers
 	public void addQueue(Customer customer){
+		//Patient is now waiting
+		controller.updateWaitingStatus(customer.getId(), true);
+
         queueEntryTimes.put(customer, Clock.getInstance().getTime());
 		if (customer.hasPriority()) {
 			int position = 0;
@@ -90,6 +93,10 @@ public class ServicePoint {
 		if (customersInService > 0) {
 			customersInService --;
 		}
+
+		// Start the next waiting patient if there is one
+		beginService();
+
 		//return customer whose service finished
 		return completed.customer;
 	}
@@ -106,7 +113,7 @@ public class ServicePoint {
 
 			// Patient has left the waiting queue and started service
 			controller.updateWaitingStatus(customer.getId(), false);
-			
+
             Double entered = queueEntryTimes.remove(customer);
             if (entered != null) totalWaitingTime += Clock.getInstance().getTime() - entered;
             customersStartedService++;

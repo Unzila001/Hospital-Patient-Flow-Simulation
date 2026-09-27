@@ -285,8 +285,6 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		//Update patients current location
 		patient.setPatientLocation(location);
 
-		patient.setWaiting(true);
-
 		//Draw patient at the new location
 		refreshPatients();
 
@@ -410,11 +408,23 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 			default:
 				return;
 		}
+		// Waiting patients are drawn semi transparent
+		// Patients being served are drawn normally
+		if(patient.isWaiting()){
+			gc.setGlobalAlpha(0.2);
+		} else {
+			gc.setGlobalAlpha(1.0);
+		}
+
+		// Priority patients use different image
 		if(patient.getPriority()) {
 			gc.drawImage(priorityPatientImage, x, y, 18, 32);
 		} else {
 			gc.drawImage(patientImage, x, y, 18, 32);
 		}
+
+		// Returning transparency for rest of code
+		gc.setGlobalAlpha(1.0);
 	}
 
 	//Refresh patient
