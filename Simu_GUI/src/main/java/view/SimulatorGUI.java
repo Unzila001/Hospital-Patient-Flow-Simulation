@@ -110,7 +110,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
             grid.add(speedUpButton, 0, 4);
             grid.add(slowButton, 1, 4);
 
-            display = new Visualisation2(700, 500);
+            display = new Visualisation2(700, 525);
             //display = new Visualisation2(400,200);
 
             // Fill the box:
