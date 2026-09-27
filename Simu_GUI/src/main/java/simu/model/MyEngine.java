@@ -143,7 +143,9 @@ public class MyEngine extends Engine {
                     a.setTotalHospitalTime();
                     a.reportResults();
                     recordCompletedPatient(a);
+
                     controller.moveCustomer(a.getId(), "Exit");
+                    controller.removeCustomer(a.getId());
                 }
                 break;
 
@@ -165,7 +167,10 @@ public class MyEngine extends Engine {
                 a.setTotalHospitalTime();
                 a.reportResults();
                 recordCompletedPatient(a);
+
                 controller.moveCustomer(a.getId(), "Exit");
+                controller.removeCustomer(a.getId());
+
                 break;
         }
     }
