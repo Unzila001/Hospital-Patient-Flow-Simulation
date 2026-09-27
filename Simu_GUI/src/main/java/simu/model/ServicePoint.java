@@ -1,5 +1,6 @@
 package simu.model;
 
+import controller.Controller;
 import eduni.distributions.ContinuousGenerator;
 import simu.framework.Clock;
 import simu.framework.Event;
@@ -15,6 +16,7 @@ public class ServicePoint {
 	private ContinuousGenerator generator;
 	private EventList eventList;
 	private EventType eventTypeScheduled;
+	private Controller controller;
 	//Queuestrategy strategy; // option: ordering of the customer
 
 	//Service point information
@@ -44,12 +46,13 @@ public class ServicePoint {
 	private PriorityQueue<CustomerInService> customersBeingServed = new PriorityQueue<>(
 			(a, b) -> Double.compare(a.completionTime, b.completionTime));
 
-	public ServicePoint(ContinuousGenerator generator, EventList tapahtumalista, EventType tyyppi, String name, int capacity){
+	public ServicePoint(ContinuousGenerator generator, EventList tapahtumalista, EventType tyyppi, String name, int capacity, Controller controller){
 		this.eventList = tapahtumalista;
 		this.generator = generator;
 		this.eventTypeScheduled = tyyppi;
 		this.name = name;
 		this.capacity = Math.max(1, capacity);
+		this.controller = controller;
 	}
 
 	//Add patient to the waiting queue
@@ -100,6 +103,10 @@ public class ServicePoint {
 
 			//Remove the first waiting customer
 			Customer customer = jono.poll();
+
+			// Patient has left the waiting queue and started service
+			controller.updateWaitingStatus(customer.getId(), false);
+			
             Double entered = queueEntryTimes.remove(customer);
             if (entered != null) totalWaitingTime += Clock.getInstance().getTime() - entered;
             customersStartedService++;

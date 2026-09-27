@@ -1,5 +1,6 @@
 package simu.model;
 
+import controller.Controller;
 import controller.IControllerMtoV;
 import eduni.distributions.Negexp;
 import eduni.distributions.Normal;
@@ -11,6 +12,7 @@ import simu.framework.Event;
 
 public class MyEngine extends Engine {
     private ArrivalProcess arrivalProcess;
+    private Controller logicController;
 
     // Simulation results
     private int servedPatients = 0;
@@ -27,16 +29,18 @@ public class MyEngine extends Engine {
     private final int treatmentCapacity = 1;
 
     public MyEngine(IControllerMtoV controller) { // NEW
-        super(controller); // NEW
+        super(controller);// NEW
+
+        this.logicController = (Controller) controller;
 
         servicePoints = new ServicePoint[6];
 
-        servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity);
-        servicePoints[1] = new ServicePoint(new Normal(10, 6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity);
-        servicePoints[2] = new ServicePoint(new Normal(10, 6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity);
-        servicePoints[3] = new ServicePoint(new Normal(10, 6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity);
-        servicePoints[4] = new ServicePoint(new Normal(10, 6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity);
-        servicePoints[5] = new ServicePoint(new Normal(10, 6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity);
+        servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity, logicController);
+        servicePoints[1] = new ServicePoint(new Normal(10, 6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity, logicController);
+        servicePoints[2] = new ServicePoint(new Normal(10, 6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity, logicController);
+        servicePoints[3] = new ServicePoint(new Normal(10, 6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity, logicController);
+        servicePoints[4] = new ServicePoint(new Normal(10, 6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity, logicController);
+        servicePoints[5] = new ServicePoint(new Normal(10, 6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity, logicController);
 
         arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARRIVAL);
     }
@@ -62,6 +66,9 @@ public class MyEngine extends Engine {
 
                 //Move patient visually to Registration
                 controller.moveCustomer(newCustomer.getId(), "Registration");
+
+                //MUISTA LAITTAA NÄMÄ KOSKA TÄMÄ ON SE JONOTUS LOGIIKKA!
+                servicePoints[0].beginService();
 
                 //Generate next arrival
                 arrivalProcess.generateNext();
@@ -120,14 +127,17 @@ public class MyEngine extends Engine {
                 if (destination < 30) {
                     // 30 %: laboratorio
                     servicePoints[4].addQueue(a);
+                    controller.moveCustomer(a.getId(), "Laboratory");
 
                 } else if (destination < 50) {
                     // 20 %: röntgen
                     servicePoints[3].addQueue(a);
+                    controller.moveCustomer(a.getId(), "X-ray");
 
                 } else if (destination < 90) {
                     // 40 %: hoito
                     servicePoints[5].addQueue(a);
+                    controller.moveCustomer(a.getId(), "Treatment");
 
                 } else {
                     // 10 %: potilas poistuu sairaalasta
@@ -135,17 +145,20 @@ public class MyEngine extends Engine {
                     a.setTotalHospitalTime();
                     a.reportResults();
                     recordCompletedPatient(a);
+                    controller.moveCustomer(a.getId(), "Exit");
                 }
                 break;
 
             case LABORATORY_COMPLETE:
                 a = servicePoints[4].removeQueue();
                 servicePoints[5].addQueue(a);
+                controller.moveCustomer(a.getId(), "Treatment");
                 break;
 
             case XRAY_COMPLETE:
                 a = servicePoints[3].removeQueue();
                 servicePoints[5].addQueue(a);
+                controller.moveCustomer(a.getId(), "Treatment");
                 break;
 
             case TREATMENT_COMPLETE:
@@ -154,6 +167,7 @@ public class MyEngine extends Engine {
                 a.setTotalHospitalTime();
                 a.reportResults();
                 recordCompletedPatient(a);
+                controller.moveCustomer(a.getId(), "Exit");
                 break;
         }
     }

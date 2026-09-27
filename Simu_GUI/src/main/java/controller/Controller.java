@@ -63,4 +63,11 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
 						condition,
 						priority));
 	}
+
+	@Override
+	public void updateWaitingStatus(int customerId, boolean waiting) {
+		Platform.runLater(() ->
+				ui.getVisualisation().updateWaitingStatus(customerId, waiting)
+		);
+	}
 }

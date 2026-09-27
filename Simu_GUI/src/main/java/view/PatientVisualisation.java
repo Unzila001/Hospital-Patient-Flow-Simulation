@@ -26,11 +26,11 @@ public class PatientVisualisation {
         patientLocation = location;
     }
 
-    public void changeWaitingStatus(boolean status){
+    public void setWaiting(boolean status){
         isWaiting = status;
     }
 
-    public boolean showWaitingStatus() { return isWaiting; }
+    public boolean isWaiting() { return isWaiting; }
 
     public boolean getPriority() { return hasPriority; }
 

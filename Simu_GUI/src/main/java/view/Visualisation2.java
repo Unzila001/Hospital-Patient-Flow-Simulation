@@ -285,6 +285,8 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		//Update patients current location
 		patient.setPatientLocation(location);
 
+		patient.setWaiting(true);
+
 		//Draw patient at the new location
 		refreshPatients();
 
@@ -343,6 +345,18 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		patients.remove(customerId);
 
 		//redraw remaining patients
+		refreshPatients();
+	}
+
+	@Override
+	public void updateWaitingStatus(int customerId, boolean waiting) {
+		PatientVisualisation patient = patients.get(customerId);
+
+		if(patient == null){
+			return;
+		}
+
+		patient.setWaiting(waiting);
 		refreshPatients();
 	}
 

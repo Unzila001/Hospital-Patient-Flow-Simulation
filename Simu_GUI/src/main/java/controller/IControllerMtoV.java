@@ -8,4 +8,5 @@ public interface IControllerMtoV {
 		public void visualiseCustomer(Customer customer);
 		public void moveCustomer(int customerId, String location);
 		public void updatePatientState(int customerId, String condition, boolean priority);
+		public void updateWaitingStatus(int customerId, boolean waiting);
 }

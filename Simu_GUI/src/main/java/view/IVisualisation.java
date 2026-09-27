@@ -18,5 +18,7 @@ public interface IVisualisation {
 
 	//Remove the customer from visualization after discharge
 	void removeCustomer(int customerId);
+
+	void updateWaitingStatus(int customerId, boolean waiting);
 }
 
