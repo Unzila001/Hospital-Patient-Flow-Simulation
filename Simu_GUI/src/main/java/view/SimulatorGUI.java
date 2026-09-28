@@ -34,6 +34,15 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
     private Label delayLabel;
     private Label resultLabel;
 
+    //management analysis GUI components
+    private Label bottleneckValue;
+    private Label averageWaitValue;
+    private Label maximumQueueValue;
+    private Label utilizationValue;
+    private Label currentCapacityValue;
+    private Label suggestedCapacityValue;
+    private Label recommendationValue;
+
     private Button startButton;
     private Button slowButton;
     private Button speedUpButton;
@@ -110,6 +119,61 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
             grid.add(speedUpButton, 0, 4);
             grid.add(slowButton, 1, 4);
 
+            //Management analysis title
+            Label managementTitle = new Label("Management Analysis");
+            managementTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 18));
+
+            //Management Analysis label
+            Label bottleneckLabel = new Label("Bottleneck:");
+            Label averageWaitLabel = new Label ("Average wait:");
+            Label maximumQueueLabel = new Label("Maximum queue:");
+            Label utilizationLabel = new Label("Utilization:");
+            Label currentCapacityLabel = new Label("Current capacity:");
+            Label suggestedCapacityLabel = new Label("Suggested capacity:");
+
+            //Values are empty until simulation analysis is received
+            bottleneckValue = new Label("-");
+            averageWaitValue = new Label("-");
+            maximumQueueValue = new Label("-");
+            utilizationValue = new Label("-");
+            currentCapacityValue = new Label("-");
+            suggestedCapacityValue = new Label("-");
+
+            recommendationValue = new Label("Run the simulation to see management analysis.");
+            recommendationValue.setWrapText(true);
+            recommendationValue.setMaxWidth(300);
+            recommendationValue.setPrefWidth(300);
+
+            //Management Analysis heading
+            grid.add(managementTitle, 0, 6, 2, 1);
+
+            //Bottleneck
+            grid.add(bottleneckLabel, 0, 7);
+            grid.add(bottleneckValue, 1, 7);
+
+            grid.add(averageWaitLabel, 0,8);
+            grid.add(averageWaitValue, 1, 8);
+
+            grid.add(maximumQueueLabel, 0, 9);
+            grid.add(maximumQueueValue, 1, 9);
+
+            grid.add(utilizationLabel, 0, 10);
+            grid.add(utilizationValue, 1, 10);
+
+            grid.add(currentCapacityLabel, 0, 11);
+            grid.add(currentCapacityValue, 1, 11);
+
+            grid.add(suggestedCapacityLabel, 0, 12);
+            grid.add(suggestedCapacityValue, 1, 12);
+
+            Label recommendationLabel = new Label("Recommendation:");
+            recommendationLabel.setFont(Font.font("Tahoma", FontWeight.BOLD, 13));
+
+            grid.add(recommendationLabel, 0, 13, 2, 1);
+            grid.add(recommendationValue, 0, 14, 2, 1);
+
+
+
             display = new Visualisation2(700, 525);
             //display = new Visualisation2(400,200);
 
@@ -139,6 +203,19 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
     public void setEndingTime(double time) {
         DecimalFormat formatter = new DecimalFormat("#0.00");
         this.results.setText(formatter.format(time));
+    }
+
+    //Display management analysis results
+    @Override
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue,
+                                       double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
+        bottleneckValue.setText(bottleneck);
+        averageWaitValue.setText(String.format("%.2f min", averageWait));
+        maximumQueueValue.setText(String.valueOf(maximumQueue));
+        utilizationValue.setText(String.format("%.2f %%", utilization));
+        currentCapacityValue.setText(String.valueOf(currentCapacity));
+        suggestedCapacityValue.setText(String.valueOf(suggestedCapacity));
+        recommendationValue.setText(recommendation);
     }
 
     @Override

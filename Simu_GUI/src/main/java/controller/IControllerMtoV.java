@@ -15,4 +15,12 @@ public interface IControllerMtoV {
     public void updateWaitingStatus(int customerId, boolean waiting);
 
     public void removeCustomer(int customerId);
+
+    public void showManagementAnalysis(String bottleneck,
+                                       double averageWait,
+                                       int maximumQueue,
+                                       double utilization,
+                                       int currentCapacity,
+                                       int suggestedCapacity,
+                                       String recommendation);
 }

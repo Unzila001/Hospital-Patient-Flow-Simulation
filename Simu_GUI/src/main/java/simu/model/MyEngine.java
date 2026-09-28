@@ -246,6 +246,53 @@ public class MyEngine extends Engine {
                     "Maximum queue length: " + point.getMaximumQueueLength()
             );
         }
+        //Find the service point with the highest average waiting time
+        ServicePoint bottleneck = servicePoints[0];
+
+        for (ServicePoint point : servicePoints) {
+            if (point.getAverageWaitingTime() > bottleneck.getAverageWaitingTime()) {
+                bottleneck = point;
+            }
+        }
+
+        //Get statistics of the bottleneck
+        double averageWait = bottleneck.getAverageWaitingTime();
+        int maximumQueue = bottleneck.getMaximumQueueLength();
+        double utilization = bottleneck.getUtilization(simulationTime);
+        int currentCapacity = bottleneck.getCapacity();
+
+        //Suggest capacity based on waiting time and utilization
+        int suggestedCapacity = currentCapacity;
+
+        if (averageWait > 5 || utilization > 80) {
+            suggestedCapacity = currentCapacity + 1;
+        }
+
+        //Create management recommendation
+        String recommendation;
+
+        if (averageWait <= 0) {
+            recommendation = "No significant bottleneck detected.";
+        } else if (suggestedCapacity > currentCapacity) {
+            recommendation = "Increase " + bottleneck.getName()
+                    + " capacity from " + currentCapacity
+                    + " to " + suggestedCapacity + ".";
+        } else {
+            recommendation = bottleneck.getName()
+                    + " has the highest average waiting time, "
+                    + "but current capacity is sufficient.";
+        }
+
+        //Send management analysis results to GUI
+        controller.showManagementAnalysis(
+                bottleneck.getName(),
+                averageWait,
+                maximumQueue,
+                utilization,
+                currentCapacity,
+                suggestedCapacity,
+                recommendation
+        );
 
         System.out.println("\n========================================");
     }

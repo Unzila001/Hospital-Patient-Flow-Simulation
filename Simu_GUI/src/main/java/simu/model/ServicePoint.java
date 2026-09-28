@@ -23,10 +23,13 @@ public class ServicePoint {
 	private String name;
 	private int capacity;
 	private int customersInService = 0;
+
+	//Statistics for management analysis
+	private double totalWaitingTime = 0;
+	private int maximumQueueLength = 0;
+
     // Statistics needed by Alex's MyEngine results()
-    private double totalWaitingTime = 0;
     private int customersStartedService = 0;
-    private int maximumQueueLength = 0;
     private double totalServiceTime = 0;
     private final java.util.Map<Customer, Double> queueEntryTimes = new java.util.IdentityHashMap<>();
 
@@ -162,4 +165,13 @@ public class ServicePoint {
     public int getMaximumQueueLength() { return maximumQueueLength; }
     public double getTotalServiceTime() { return totalServiceTime; }
     public int getQueueLength() { return jono.size(); }
+
+	//Calculate percentage of service capacity that was used
+	public double getUtilization(double simulationTime) {
+
+		if (simulationTime <= 0) {
+			return 0;
+		}
+		return (totalServiceTime / (simulationTime * capacity)) * 100;
+	}
 }

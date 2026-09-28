@@ -49,6 +49,7 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
         Platform.runLater(() -> ui.getVisualisation().newCustomer(customer));
     }
 
+
     @Override
     public void moveCustomer(int customerId, String location) {
         Platform.runLater(() ->
@@ -76,5 +77,26 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
         Platform.runLater(() ->
                 ui.getVisualisation().removeCustomer(customerId)
         );
+    }
+
+    @Override
+    public void showManagementAnalysis(String bottleneck,
+                                       double averageWait,
+                                       int maximumQueue,
+                                       double utilization,
+                                       int currentCapacity,
+                                       int suggestedCapacity,
+                                       String recommendation) {
+        Platform.runLater(() ->
+                ui.showManagementAnalysis(
+                        bottleneck,
+                        averageWait,
+                        maximumQueue,
+                        utilization,
+                        currentCapacity,
+                        suggestedCapacity,
+                        recommendation
+                ));
+
     }
 }

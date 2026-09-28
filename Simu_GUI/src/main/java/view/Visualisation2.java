@@ -17,6 +17,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	private Image patientImage;
 	private Image priorityPatientImage;
 	private int totalArrivals = 0;
+	private int totalExits;
 
 	//Store the current location of every patient
 	private Map<Integer, PatientVisualisation> patients = new HashMap<>();
@@ -342,11 +343,15 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 
 	@Override
 	public void removeCustomer(int customerId) {
+		//Patient has completed the hospital flow
+		totalExits++;
+
 		//Remove patient from visualization
 		patients.remove(customerId);
 
 		//redraw remaining patients
 		refreshPatients();
+
 	}
 
 	@Override
@@ -391,6 +396,8 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		 //only draw if there is atleast one patient
 		if (location.equals("Arrival")) {
 			count = totalArrivals;
+		} else if (location.equals("Exit")) {
+			count = totalExits;
 		} else {
 			count = getPatientCount(location);
 		}

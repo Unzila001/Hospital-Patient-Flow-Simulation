@@ -10,4 +10,13 @@ public interface ISimulatorUI {
 	
 	// Controller requires
 	public IVisualisation getVisualisation();
+
+	//Management Analysis
+	 public void showManagementAnalysis(String bottleneck,
+										double averageWait,
+										int maximumQueue,
+										double utilization,
+										int currentCapacity,
+										int suggestedCapacity,
+										String recommendation);
 }
