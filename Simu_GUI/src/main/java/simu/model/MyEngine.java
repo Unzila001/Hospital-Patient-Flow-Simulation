@@ -13,6 +13,7 @@ import simu.framework.Event;
 public class MyEngine extends Engine {
     private ArrivalProcess arrivalProcess;
     private Controller logicController;
+    private ServicePointStats stats;
 
     // Simulation results
     private int servedPatients = 0;
@@ -186,8 +187,23 @@ public class MyEngine extends Engine {
         }
     }
 
+    private ServicePointStats createStats(ServicePoint servicePoint){
+        stats = new ServicePointStats();
+
+        stats.setServiceName(servicePoint.getName());
+        stats.setAverageWaitingTime(servicePoint.getAverageWaitingTime());
+        stats.setMaxQueueLength(servicePoint.getMaximumQueueLength());
+        stats.setCurrentCapacity(servicePoint.getCapacity());
+        stats.setTotalServiceTime(servicePoint.getTotalServiceTime());
+        stats.setNumberStarted(servicePoint.getCustomersStartedService());
+        stats.setUtilization(servicePoint.getUtilization());
+
+        return stats;
+    }
+
     @Override
     protected void results() {
+
         double simulationTime = Clock.getInstance().getTime();
 
         // Säilytetään yhteys GUI-käyttöliittymään.
@@ -235,15 +251,34 @@ public class MyEngine extends Engine {
         System.out.println("\n--- SERVICE POINT STATISTICS ---");
 
         for (ServicePoint point : servicePoints) {
-            System.out.println("\n" + point.getName());
+
+            ServicePointStats stats = createStats(point);
+
+            System.out.println("\n" + stats.getServiceName());
 
             System.out.printf(
                     "Average waiting time: %.2f minutes%n",
-                    point.getAverageWaitingTime()
+                    stats.getAverageWaitingTime()
             );
 
             System.out.println(
-                    "Maximum queue length: " + point.getMaximumQueueLength()
+                    "Maximum queue length: " + stats.getMaxQueueLength()
+            );
+
+            System.out.println(
+                    "Current capacity: " + stats.getCurrentCapacity()
+            );
+
+            System.out.printf(
+                    "Total service time: %.2f minutes", stats.getTotalServiceTime()
+            );
+
+            System.out.println(
+                    "Patients started service: " + stats.getNumberStarted()
+            );
+
+            System.out.println(
+                    "Utilization: %.2f" + stats.getCurrentCapacity()
             );
         }
 
