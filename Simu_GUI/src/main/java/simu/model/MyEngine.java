@@ -270,15 +270,15 @@ public class MyEngine extends Engine {
             );
 
             System.out.printf(
-                    "Total service time: %.2f minutes", stats.getTotalServiceTime()
+                    "Total service time: %.2f minutes%n", stats.getTotalServiceTime()
             );
 
             System.out.println(
                     "Patients started service: " + stats.getNumberStarted()
             );
 
-            System.out.println(
-                    "Utilization: %.2f" + stats.getCurrentCapacity()
+            System.out.printf(
+                    "Utilization: %.2f%%%n", stats.getUtilization()
             );
         }
         //Find the service point with the highest average waiting time
