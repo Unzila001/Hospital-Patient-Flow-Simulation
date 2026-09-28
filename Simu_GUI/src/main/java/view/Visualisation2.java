@@ -16,6 +16,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	private GraphicsContext gc;
 	private Image patientImage;
 	private Image priorityPatientImage;
+	private int totalArrivals = 0;
 
 	//Store the current location of every patient
 	private Map<Integer, PatientVisualisation> patients = new HashMap<>();
@@ -33,6 +34,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 
 	@Override
 	public void clearDisplay() {
+		totalArrivals = 0;
 
 		//Reset patient data for a new simulation
 		patients.clear();
@@ -213,6 +215,7 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 	}
 	@Override
 	public void newCustomer(Customer customer) {
+		totalArrivals++;
 
 		//Store new patient location
 		PatientVisualisation patientVisualisation = new PatientVisualisation(customer);
@@ -358,6 +361,52 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		refreshPatients();
 	}
 
+	//Count how many patients are currently at a location
+	private int getPatientCount(String location) {
+		int count = 0;
+		for (PatientVisualisation patient : patients.values()) {
+			if (location.equals(patient.getPatientLocation())) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	//Count priority patient at location
+	private int getPriorityPatientCount(String location) {
+		int count = 0;
+
+		for (PatientVisualisation patient : patients.values()) {
+			if (location.equals(patient.getPatientLocation()) && patient.getPriority()) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	//Draw one patient image with the number of patients at this location
+	private void drawPatientCount(String location, double x, double y) {
+		 int count;
+
+		 //only draw if there is atleast one patient
+		if (location.equals("Arrival")) {
+			count = totalArrivals;
+		} else {
+			count = getPatientCount(location);
+		}
+
+		//only draw if there is atleast one patient
+		if (count > 0) {
+			//Total patients
+			gc.drawImage(patientImage, x, y, 18, 32);
+
+			//Draw one number beside the patient image
+			gc.setFill(Color.BLACK);
+			gc.setFont(new Font(14));
+			gc.fillText(String.valueOf(count), x + 5, y - 3);
+		}
+	}
+
 	private void drawPatient(int customerId, String location) {
 		PatientVisualisation patient = patients.get(customerId);
 
@@ -453,9 +502,15 @@ public class Visualisation2 extends Canvas implements IVisualisation {
 		drawArrow(505, 240, 505, 290);		//Treatment -> Exit
 		drawDirectDischargeRoute();
 
-		//Redraw every patient at their current location
-		for (PatientVisualisation patient : patients.values()) {
-			drawPatient(patient.getPatientId(), patient.getPatientLocation());
-		}
+		//Draw one patient image and patient count at each location
+		drawPatientCount("Arrival", 25, 85);
+		drawPatientCount("Registration", 145, 85);
+		drawPatientCount("Triage", 295, 85);
+		drawPatientCount("Doctor", 445, 85);
+
+		drawPatientCount("Laboratory", 145, 195);
+		drawPatientCount("X-ray", 295, 195);
+		drawPatientCount("Treatment", 445, 195);
+		drawPatientCount("Exit", 445, 305);
 	}
 }

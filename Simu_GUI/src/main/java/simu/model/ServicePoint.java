@@ -94,9 +94,6 @@ public class ServicePoint {
 			customersInService --;
 		}
 
-		// Start the next waiting patient if there is one
-		beginService();
-
 		//return customer whose service finished
 		return completed.customer;
 	}

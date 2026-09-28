@@ -67,9 +67,6 @@ public class MyEngine extends Engine {
                 //Move patient visually to Registration
                 controller.moveCustomer(newCustomer.getId(), "Registration");
 
-                //MUISTA LAITTAA NÄMÄ KOSKA TÄMÄ ON SE JONOTUS LOGIIKKA!
-                servicePoints[0].beginService();
-
                 //Generate next arrival
                 arrivalProcess.generateNext();
                 break;
@@ -80,8 +77,6 @@ public class MyEngine extends Engine {
 
                 //Move patient visually to Triage
                 controller.moveCustomer(a.getId(), "Triage");
-
-                servicePoints[1].beginService();
 
                 break;
 
@@ -120,8 +115,6 @@ public class MyEngine extends Engine {
                 //Update visualization
                 controller.moveCustomer(a.getId(), "Doctor");
 
-                servicePoints[2].beginService();
-
                 break;
 
             case DOCTOR_COMPLETE:
@@ -133,19 +126,16 @@ public class MyEngine extends Engine {
                     // 30 %: laboratorio
                     servicePoints[4].addQueue(a);
                     controller.moveCustomer(a.getId(), "Laboratory");
-                    servicePoints[4].beginService();
 
                 } else if (destination < 50) {
                     // 20 %: röntgen
                     servicePoints[3].addQueue(a);
                     controller.moveCustomer(a.getId(), "X-ray");
-                    servicePoints[3].beginService();
 
                 } else if (destination < 90) {
                     // 40 %: hoito
                     servicePoints[5].addQueue(a);
                     controller.moveCustomer(a.getId(), "Treatment");
-                    servicePoints[5].beginService();
 
                 } else {
                     // 10 %: potilas poistuu sairaalasta
@@ -153,7 +143,9 @@ public class MyEngine extends Engine {
                     a.setTotalHospitalTime();
                     a.reportResults();
                     recordCompletedPatient(a);
+
                     controller.moveCustomer(a.getId(), "Exit");
+                    controller.removeCustomer(a.getId());
                 }
                 break;
 
@@ -161,14 +153,12 @@ public class MyEngine extends Engine {
                 a = servicePoints[4].removeQueue();
                 servicePoints[5].addQueue(a);
                 controller.moveCustomer(a.getId(), "Treatment");
-                servicePoints[5].beginService();
                 break;
 
             case XRAY_COMPLETE:
                 a = servicePoints[3].removeQueue();
                 servicePoints[5].addQueue(a);
                 controller.moveCustomer(a.getId(), "Treatment");
-                servicePoints[5].beginService();
                 break;
 
             case TREATMENT_COMPLETE:
@@ -177,7 +167,10 @@ public class MyEngine extends Engine {
                 a.setTotalHospitalTime();
                 a.reportResults();
                 recordCompletedPatient(a);
+
                 controller.moveCustomer(a.getId(), "Exit");
+                controller.removeCustomer(a.getId());
+
                 break;
         }
     }
