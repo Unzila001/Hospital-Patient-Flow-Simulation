@@ -4,150 +4,73 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0c8ce505-eb81-4f5e-8b3d-1e525a2f8a59" name="Changes" comment="Person 1 and 2 complete hospital simulation task." />
+    <list default="true" id="15db5602-8d35-4dd4-89be-fd8a80305266" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Hospital_Simulation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Hospital_Simulation/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/ArrivalProcess.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/Clock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/Engine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/Event.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/EventList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/IEventType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/framework/Trace.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/model/Customer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/model/EventType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/model/MyEngine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simu/model/ServicePoint.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="48" />
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="master" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Unzila001&quot;
+    &quot;assignee&quot;: &quot;UnnaHaitto&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Unzila001/Hospital-Patient-Flow-Simulation&quot;,
-    &quot;accountId&quot;: &quot;b5424468-9991-4929-bb1a-446bc4e05f03&quot;
+    &quot;url&quot;: &quot;https://github.com/Unzila001/Hospital-Patient-Flow-Simulation.git&quot;,
+    &quot;accountId&quot;: &quot;a57589a9-8afd-4038-8257-79277d920398&quot;
   }
 }</component>
-  <component name="McpProjectServerCommands">
-    <commands />
-    <urls />
-  </component>
-  <component name="NextEditCompletionFeaturesState">
-    <decayedCancelled>
-      <entry key="MS100" value="1.012891448653584" />
-      <entry key="MS500" value="1.6120063093903605" />
-      <entry key="S2" value="3.998516526512606" />
-      <entry key="S5" value="7.265845988176677" />
-      <entry key="S10" value="9.785851318413075" />
-      <entry key="S30" value="12.34335085460521" />
-      <entry key="S60" value="13.194872409044084" />
-      <entry key="M2" value="14.152684811440535" />
-      <entry key="M5" value="19.15248609979776" />
-      <entry key="M10" value="26.16426803869557" />
-      <entry key="M15" value="30.224848956288422" />
-      <entry key="M30" value="35.67357369780954" />
-      <entry key="H1" value="39.06570808068807" />
-      <entry key="H2" value="41.12338121090339" />
-      <entry key="H4" value="45.57055014695508" />
-      <entry key="D1" value="133.0237721086313" />
-      <entry key="W1" value="222.28032117052507" />
-    </decayedCancelled>
-    <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="5.239502923512981E-147" />
-      <entry key="S2" value="2.6904351093616488E-37" />
-      <entry key="S5" value="2.35466435074834E-15" />
-      <entry key="S10" value="4.852488383036646E-8" />
-      <entry key="S30" value="0.0036479150459149076" />
-      <entry key="S60" value="0.06162917313919221" />
-      <entry key="M2" value="0.3185420607208634" />
-      <entry key="M5" value="1.4730409837856084" />
-      <entry key="M10" value="2.872499052867189" />
-      <entry key="M15" value="3.6467095365633915" />
-      <entry key="M30" value="4.662522438412686" />
-      <entry key="H1" value="5.28508192298576" />
-      <entry key="H2" value="5.630612197513213" />
-      <entry key="H4" value="5.896749565491871" />
-      <entry key="D1" value="13.817982395433972" />
-      <entry key="W1" value="23.48214408159828" />
-    </decayedSelected>
-    <decayedShown>
-      <entry key="MS100" value="0.9517188027792604" />
-      <entry key="MS500" value="1.5927742506819382" />
-      <entry key="S2" value="3.986113104720693" />
-      <entry key="S5" value="7.256443780824036" />
-      <entry key="S10" value="9.779414695929768" />
-      <entry key="S30" value="12.343799849585746" />
-      <entry key="S60" value="13.250965446840244" />
-      <entry key="M2" value="14.458847774971973" />
-      <entry key="M5" value="20.599354545170698" />
-      <entry key="M10" value="29.009600411292393" />
-      <entry key="M15" value="33.84809410355964" />
-      <entry key="M30" value="40.32079658246756" />
-      <entry key="H1" value="44.34203469268452" />
-      <entry key="H2" value="46.74928441511225" />
-      <entry key="H4" value="51.46461100194368" />
-      <entry key="D1" value="146.84014094502305" />
-      <entry key="W1" value="245.76206212676234" />
-    </decayedShown>
-  </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 2,
-  &quot;fromUser&quot;: false
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
 }</component>
-  <component name="ProjectId" id="3JM42L878oVno2a9WZbKA9eN31S" />
+  <component name="ProjectId" id="3Jdnawz9DB0JAGfrlzDId16eebD" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Main.executor": "Run",
     "Application.Simulator.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Unzila-ServicePoints",
-    "git.auto.fetch.suggestion.counter": "3",
-    "junie.onboarding.icon.badge.shown": "true",
+    "git-widget-placeholder": "GUI",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/unzil/OneDrive/Documents/AMK - Metropolia/OhjelmointiProjekti/Hospital_Simulation",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JavaScript",
-    "to.speed.mode.migration.done": "true"
+    "last_opened_file_path": "C:/Users/osbdo/Documents/GitHub/Hospital-Patient-Flow-Simulation"
   }
 }]]></component>
   <component name="RunManager">
-    <configuration name="Simulator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.Simulator" />
-      <module name="Hospital_Simulation" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+    <configuration default="true" type="JetRunConfigurationType">
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Simulator" />
-      </list>
-    </recent_temporary>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -159,11 +82,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="0c8ce505-eb81-4f5e-8b3d-1e525a2f8a59" name="Changes" comment="" />
-      <created>1789457395623</created>
+      <changelist id="15db5602-8d35-4dd4-89be-fd8a80305266" name="Changes" comment="" />
+      <created>1789999884097</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1789457395623</updated>
+      <updated>1789999884097</updated>
     </task>
     <servers />
   </component>
@@ -175,30 +98,10 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="Unzila-ServicePoints" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial commit" />
-    <MESSAGE value="Implement service point queues and capacity" />
-    <MESSAGE value="Add some comments in ServicePoint.java" />
-    <MESSAGE value="Complete hospital service point config" />
-    <MESSAGE value="Person 1 and 2 complete hospital simulation task." />
-    <option name="LAST_COMMIT_MESSAGE" value="Person 1 and 2 complete hospital simulation task." />
   </component>
 </project>
