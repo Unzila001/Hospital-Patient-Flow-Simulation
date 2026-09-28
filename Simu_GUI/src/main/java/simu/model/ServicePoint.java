@@ -165,6 +165,7 @@ public class ServicePoint {
     public int getMaximumQueueLength() { return maximumQueueLength; }
     public double getTotalServiceTime() { return totalServiceTime; }
 	public double getUtilization() { return getTotalServiceTime() / (Clock.getInstance().getTime() * getCapacity()) * 100; }
+	public int getCustomersStartedService() { return customersStartedService; }
     public int getQueueLength() { return jono.size(); }
 
 	//Calculate percentage of service capacity that was used
