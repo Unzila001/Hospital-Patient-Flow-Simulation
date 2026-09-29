@@ -9,6 +9,8 @@ import simu.framework.Clock;
 import simu.framework.Engine;
 import simu.framework.Event;
 
+import dao.SimulationRunDao;
+import java.sql.SQLException;
 
 public class MyEngine extends Engine {
     private ArrivalProcess arrivalProcess;
@@ -328,6 +330,35 @@ public class MyEngine extends Engine {
                 suggestedCapacity,
                 recommendation
         );
+
+        //Create DAO for saving the completed simulation run
+        SimulationRunDao simulationRunDao = new SimulationRunDao();
+
+        //Temporary seed value until RandomWithSeed is integrated
+        long randomSeed = 5;
+
+        try {
+            int runId = simulationRunDao.saveSimulationRun(
+                    simulationTime,
+                    randomSeed,
+                    registrationCapacity,
+                    triageCapacity,
+                    doctorCapacity,
+                    laboratoryCapacity,
+                    xrayCapacity,
+                    treatmentCapacity,
+                    servedPatients,
+                    averageHospitalTime,
+                    patientsPerHour,
+                    doctorUtilization,
+                    bottleneck.getName()
+            );
+
+            System.out.println("Simulation run saved to database. run_id: " + runId);
+        } catch (SQLException e) {
+            System.out.println("Failed to save simulation run to database.");
+            e.printStackTrace();
+        }
 
         System.out.println("\n========================================");
     }
