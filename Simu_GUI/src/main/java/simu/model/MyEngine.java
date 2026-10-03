@@ -258,17 +258,6 @@ public class MyEngine extends Engine {
 
             ServicePointStats stats = createStats(point);
 
-            // Persist the service point stats into the database
-            try {
-                servicePointResultDao.persist(stats);
-
-                System.out.println("Service point stats are now persisted into the database!");
-            } catch (SQLException e){
-                System.out.println("Service point stats were not able to be persisted into the database!");
-
-                e.printStackTrace();
-            }
-
             System.out.println("\n" + stats.getServiceName());
 
             System.out.printf(
@@ -349,9 +338,10 @@ public class MyEngine extends Engine {
 
         //Temporary seed value until RandomWithSeed is integrated
         long randomSeed = 5;
+        int runId = 0;
 
         try {
-            int runId = simulationRunDao.saveSimulationRun(
+            runId = simulationRunDao.saveSimulationRun(
                     simulationTime,
                     randomSeed,
                     registrationCapacity,
@@ -371,6 +361,21 @@ public class MyEngine extends Engine {
         } catch (SQLException e) {
             System.out.println("Failed to save simulation run to database.");
             e.printStackTrace();
+        }
+
+        for (ServicePoint point : servicePoints){
+            ServicePointStats stats = createStats(point);
+
+            // Persist the service point stats into the database
+            try {
+                servicePointResultDao.persist(stats, runId);
+
+                System.out.println("Service point stats are now persisted into the database!");
+            } catch (SQLException e){
+                System.out.println("Service point stats were not able to be persisted into the database!");
+
+                e.printStackTrace();
+            }
         }
 
         System.out.println("\n========================================");
