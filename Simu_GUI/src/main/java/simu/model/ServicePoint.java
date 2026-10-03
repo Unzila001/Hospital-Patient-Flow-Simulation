@@ -1,17 +1,20 @@
 package simu.model;
 
 import controller.Controller;
+import dao.ServicePointDao;
 import eduni.distributions.ContinuousGenerator;
 import simu.framework.Clock;
 import simu.framework.Event;
 import simu.framework.EventList;
 
+import java.sql.SQLException;
 import java.util.PriorityQueue;
 import java.util.LinkedList;
 
 // TODO:
 // Service Point functionalities & calculations (+ variables needed) and reporting to be implemented
 public class ServicePoint {
+	private ServicePointDao servicePointDao = new ServicePointDao();
 	private LinkedList<Customer> jono = new LinkedList<Customer>(); // Data Structure used
 	private ContinuousGenerator generator;
 	private EventList eventList;
@@ -167,6 +170,7 @@ public class ServicePoint {
 	public double getUtilization() { return getTotalServiceTime() / (Clock.getInstance().getTime() * getCapacity()) * 100; }
 	public int getCustomersStartedService() { return customersStartedService; }
     public int getQueueLength() { return jono.size(); }
+	public int getId() throws SQLException { return servicePointDao.getId(this.name); }
 
 	//Calculate percentage of service capacity that was used
 	public double getUtilization(double simulationTime) {
