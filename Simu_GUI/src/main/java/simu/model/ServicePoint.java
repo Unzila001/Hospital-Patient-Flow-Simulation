@@ -170,7 +170,6 @@ public class ServicePoint {
 	public double getUtilization() { return getTotalServiceTime() / (Clock.getInstance().getTime() * getCapacity()) * 100; }
 	public int getCustomersStartedService() { return customersStartedService; }
     public int getQueueLength() { return jono.size(); }
-	public int getId() throws SQLException { return servicePointDao.getId(this.name); }
 
 	//Calculate percentage of service capacity that was used
 	public double getUtilization(double simulationTime) {
