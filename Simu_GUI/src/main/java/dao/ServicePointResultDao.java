@@ -10,7 +10,9 @@ import java.sql.SQLException;
 
 public class ServicePointResultDao {
 
-    public void persist (ServicePointStats servicePointStats, ServicePoint servicePoint) throws SQLException {
+    ServicePointDao dao = new ServicePointDao();
+
+    public void persist (ServicePointStats servicePointStats) throws SQLException {
         Connection conn = MariaDbConnection.getConnection();
         String sql = "INSERT INTO Service_point_result (average_waiting_time, max_queue_length, total_service_time, patients_started_service, utilization, service_id) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -21,7 +23,7 @@ public class ServicePointResultDao {
             ps.setDouble(3, servicePointStats.getTotalServiceTime());
             ps.setInt(4, servicePointStats.getNumberStarted());
             ps.setDouble(5, servicePointStats.getUtilization());
-            ps.setInt(6, servicePoint.getId());
+            ps.setInt(6, dao.getId(servicePointStats.getServiceName()));
 
             ps.executeUpdate();
         } catch (SQLException e){
