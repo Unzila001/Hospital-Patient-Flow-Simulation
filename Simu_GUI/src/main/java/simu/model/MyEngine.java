@@ -261,7 +261,11 @@ public class MyEngine extends Engine {
             // Persist the service point stats into the database
             try {
                 servicePointResultDao.persist(stats);
+
+                System.out.println("Service point stats are now persisted into the database!");
             } catch (SQLException e){
+                System.out.println("Service point stats were not able to be persisted into the database!");
+
                 e.printStackTrace();
             }
 
