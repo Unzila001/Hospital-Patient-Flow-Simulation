@@ -14,7 +14,7 @@ public class ServicePointResultDao {
 
     public void persist (ServicePointStats servicePointStats) throws SQLException {
         Connection conn = MariaDbConnection.getConnection();
-        String sql = "INSERT INTO Service_point_result (average_waiting_time, max_queue_length, total_service_time, patients_started_service, utilization, service_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Service_point_result (average_waiting_time, max_queue_length, total_service_time, patients_started_service, utilization, service_id, run_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -24,6 +24,7 @@ public class ServicePointResultDao {
             ps.setInt(4, servicePointStats.getNumberStarted());
             ps.setDouble(5, servicePointStats.getUtilization());
             ps.setInt(6, dao.getId(servicePointStats.getServiceName()));
+            // ps.setInt(7, hae tässä kohtaa runId);
 
             ps.executeUpdate();
         } catch (SQLException e){
