@@ -2,6 +2,7 @@ package simu.model;
 
 import controller.Controller;
 import controller.IControllerMtoV;
+import dao.ServicePointResultDao;
 import eduni.distributions.Negexp;
 import eduni.distributions.Normal;
 import simu.framework.ArrivalProcess;
@@ -16,6 +17,7 @@ public class MyEngine extends Engine {
     private ArrivalProcess arrivalProcess;
     private Controller logicController;
     private ServicePointStats stats;
+    private ServicePointResultDao servicePointResultDao = new ServicePointResultDao();
 
     // Simulation results
     private int servedPatients = 0;
@@ -255,6 +257,13 @@ public class MyEngine extends Engine {
         for (ServicePoint point : servicePoints) {
 
             ServicePointStats stats = createStats(point);
+
+            // Persist the service point stats into the database
+            try {
+                servicePointResultDao.persist(stats);
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
 
             System.out.println("\n" + stats.getServiceName());
 
