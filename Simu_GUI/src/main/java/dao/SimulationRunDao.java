@@ -102,8 +102,8 @@ public class SimulationRunDao {
                 row.put("patientsServed", rs.getInt(11));
                 row.put("averageHospitalTime", rs.getDouble(12));
                 row.put("patientsPerHour", rs.getDouble(13));
-                row.put("doctorUtilization", rs.getInt(14));
-                row.put("bottleneckService", rs.getInt(15));
+                row.put("doctorUtilization", rs.getDouble(14));
+                row.put("bottleneckService", rs.getString(15));
 
                 results.add(row);
             }
