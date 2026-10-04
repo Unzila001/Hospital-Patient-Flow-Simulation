@@ -93,7 +93,7 @@ public class SimulationRunDao {
                 row.put("runDate", rs.getTimestamp(2));
                 row.put("simulationTime", rs.getDouble(3));
                 row.put("randomSeed", rs.getLong(4));
-                row.put("registerationCapacity", rs.getInt(5));
+                row.put("registrationCapacity", rs.getInt(5));
                 row.put("triageCapacity", rs.getInt(6));
                 row.put("doctorCapacity", rs.getInt(7));
                 row.put("labCapacity", rs.getInt(8));

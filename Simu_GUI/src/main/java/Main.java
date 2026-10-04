@@ -52,10 +52,10 @@ public class Main { // Simulator using Java FX
 				System.out.println("Run Date: " + row.get("runDate"));
 				System.out.println("Simulation Time: " + row.get("simulationTime"));
 				System.out.println("Random Seed: " + row.get("randomSeed"));
-				System.out.println("Registration Capacity: " + row.get("registerationCapacity"));
+				System.out.println("Registration Capacity: " + row.get("registrationCapacity"));
 				System.out.println("Triage Capacity: " + row.get("triageCapacity"));
 				System.out.println("Doctor Capacity: " + row.get("doctorCapacity"));
-				System.out.println("Lab Capacity: " + row.get("labCapacity"));
+				System.out.println("Laboratory Capacity: " + row.get("laboratoryCapacity"));
 				System.out.println("X-ray Capacity: " + row.get("xrayCapacity"));
 				System.out.println("Treatment Capacity: " + row.get("treatmentCapacity"));
 				System.out.println("Patients Served: " + row.get("patientsServed"));
