@@ -10,6 +10,18 @@ public class ServicePointStats {
     private int numberStarted;
     private double utilization;
 
+    public ServicePointStats(){}
+
+    public ServicePointStats(String serviceName, double averageWaitingTime, int maxQueueLength, int currentCapacity, double totalServiceTime, int numberStarted, double utilization){
+        this.serviceName = serviceName;
+        this.averageWaitingTime = averageWaitingTime;
+        this.maxQueueLength = maxQueueLength;
+        this.currentCapacity = currentCapacity;
+        this.totalServiceTime = totalServiceTime;
+        this.numberStarted = numberStarted;
+        this.utilization = utilization;
+    }
+
     public String getServiceName() {
         return serviceName;
     }
