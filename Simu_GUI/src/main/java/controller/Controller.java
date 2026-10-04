@@ -17,9 +17,10 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
     /* Engine control: */
     @Override
     public void startSimulation() {
-        engine = new MyEngine(this); // new Engine thread is created for every simulation
+        engine = new MyEngine(this, ui.getSeed());
         engine.setSimulationTime(ui.getTime());
         engine.setDelay(ui.getDelay());
+
         ui.getVisualisation().clearDisplay();
         ((Thread) engine).start();
         //((Thread)engine).run(); // Never like this, why?

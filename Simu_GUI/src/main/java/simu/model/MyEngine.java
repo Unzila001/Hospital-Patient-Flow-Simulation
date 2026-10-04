@@ -12,6 +12,7 @@ import simu.framework.Event;
 
 import dao.SimulationRunDao;
 import java.sql.SQLException;
+import java.util.Random;
 
 public class MyEngine extends Engine {
     private ArrivalProcess arrivalProcess;
@@ -25,6 +26,10 @@ public class MyEngine extends Engine {
     private int emergencyPatients = 0;
     private int normalPatients = 0;
 
+    //Random seed for reproducibility
+    private long randomSeed = 5;
+    private Random random = new Random(randomSeed);
+
     //Service point capacities
     private final int registrationCapacity = 1;
     private final int triageCapacity = 1;
@@ -33,21 +38,23 @@ public class MyEngine extends Engine {
     private final int laboratoryCapacity = 1;
     private final int treatmentCapacity = 1;
 
-    public MyEngine(IControllerMtoV controller) { // NEW
+    public MyEngine(IControllerMtoV controller, long randomSeed) { // NEW
         super(controller);// NEW
 
         this.logicController = (Controller) controller;
+        this.randomSeed = randomSeed;
+        this.random = new Random(randomSeed);
 
         servicePoints = new ServicePoint[6];
 
-        servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity, logicController);
-        servicePoints[1] = new ServicePoint(new Normal(10, 6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity, logicController);
-        servicePoints[2] = new ServicePoint(new Normal(10, 6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity, logicController);
-        servicePoints[3] = new ServicePoint(new Normal(10, 6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity, logicController);
-        servicePoints[4] = new ServicePoint(new Normal(10, 6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity, logicController);
-        servicePoints[5] = new ServicePoint(new Normal(10, 6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity, logicController);
+        servicePoints[0] = new ServicePoint(new Normal(10, 6, randomSeed), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity, logicController);
+        servicePoints[1] = new ServicePoint(new Normal(10, 6, randomSeed + 1), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity, logicController);
+        servicePoints[2] = new ServicePoint(new Normal(10, 6, randomSeed + 2), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity, logicController);
+        servicePoints[3] = new ServicePoint(new Normal(10, 6, randomSeed + 3), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity, logicController);
+        servicePoints[4] = new ServicePoint(new Normal(10, 6, randomSeed + 4), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity, logicController);
+        servicePoints[5] = new ServicePoint(new Normal(10, 6, randomSeed + 5), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity, logicController);
 
-        arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARRIVAL);
+        arrivalProcess = new ArrivalProcess(new Negexp(15, randomSeed + 6), eventList, EventType.ARRIVAL);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class MyEngine extends Engine {
                 a = servicePoints[1].removeQueue();
 
                 //Assign patient condition during triage
-                int condition = (int) (Math.random() * 100);
+                int condition = random.nextInt(100);
 
                 if (condition < 50) {
                     //50% illness
@@ -125,7 +132,7 @@ public class MyEngine extends Engine {
             case DOCTOR_COMPLETE:
                 a = servicePoints[2].removeQueue();
 
-                int destination = (int) (Math.random() * 100);
+                int destination = random.nextInt(100);
 
                 if (destination < 30) {
                     // 30 %: laboratorio
@@ -214,6 +221,8 @@ public class MyEngine extends Engine {
         controller.showEndTime(simulationTime);
 
         System.out.println("\n========== SIMULATION RESULTS ==========");
+        System.out.println("Random seed: " + randomSeed);
+
 
         // 1. Hoidetut potilaat
         System.out.println("Patients served: " + servedPatients);
@@ -336,8 +345,6 @@ public class MyEngine extends Engine {
         //Create DAO for saving the completed simulation run
         SimulationRunDao simulationRunDao = new SimulationRunDao();
 
-        //Temporary seed value until RandomWithSeed is integrated
-        long randomSeed = 5;
         int runId = 0;
 
         try {
