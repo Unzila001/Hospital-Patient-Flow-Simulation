@@ -2,10 +2,11 @@ package dao;
 
 import datasource.MariaDbConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SimulationRunDao {
 
@@ -73,5 +74,43 @@ public class SimulationRunDao {
             //If no run_id was returned, something went wrong
             throw new SQLException("Creating simulation run failed, no run_id returned.");
         }
+    }
+
+    public List<Map<String, Object>> getAllSimulationRuns() throws SQLException {
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        Connection conn = MariaDbConnection.getConnection();
+        String sql = "SELECT * FROM simulation_run";
+
+        try{
+            Statement s = conn.createStatement();
+            ResultSet rs = s.executeQuery(sql);
+
+            while(rs.next()){
+                HashMap<String, Object> row = new HashMap<>();
+
+                row.put("runId", rs.getInt(1));
+                row.put("runDate", rs.getTimestamp(2));
+                row.put("simulationTime", rs.getDouble(3));
+                row.put("randomSeed", rs.getLong(4));
+                row.put("registerationCapacity", rs.getInt(5));
+                row.put("triageCapacity", rs.getInt(6));
+                row.put("doctorCapacity", rs.getInt(7));
+                row.put("labCapacity", rs.getInt(8));
+                row.put("xrayCapacity", rs.getInt(9));
+                row.put("treatmentCapacity", rs.getInt(10));
+                row.put("patientsServed", rs.getInt(11));
+                row.put("averageHospitalTime", rs.getDouble(12));
+                row.put("patientsPerHour", rs.getDouble(13));
+                row.put("doctorUtilization", rs.getInt(14));
+                row.put("bottleneckService", rs.getInt(15));
+
+                results.add(row);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return results;
     }
 }
