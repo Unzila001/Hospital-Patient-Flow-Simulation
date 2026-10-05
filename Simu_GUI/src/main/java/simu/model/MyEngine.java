@@ -372,7 +372,7 @@ public class MyEngine extends Engine {
                     bottleneck.getName()
             );
 
-            System.out.println("Simulation run saved to database. run_id: " + runId);
+            System.out.println("\nSimulation run saved to database. run_id: " + runId);
 
         // Save all completed patients using this simulation's run_id.
         for (Customer customer : completedCustomers) {
@@ -393,13 +393,13 @@ public class MyEngine extends Engine {
             try {
                 servicePointResultDao.persist(stats, runId);
 
-                System.out.println("Service point stats are now persisted into the database!");
             } catch (SQLException e){
                 System.out.println("Service point stats were not able to be persisted into the database!");
 
                 e.printStackTrace();
             }
         }
+        System.out.println("Service point results saved to database!");
 
         System.out.println("\n========================================");
     }
