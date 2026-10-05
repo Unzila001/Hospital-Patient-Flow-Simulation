@@ -1,5 +1,6 @@
 package simu.model;
 
+import dao.PatientResultDao;
 import controller.Controller;
 import controller.IControllerMtoV;
 import dao.ServicePointResultDao;
@@ -9,6 +10,8 @@ import simu.framework.ArrivalProcess;
 import simu.framework.Clock;
 import simu.framework.Engine;
 import simu.framework.Event;
+import java.util.ArrayList;
+import java.util.List;
 
 import dao.SimulationRunDao;
 import java.sql.SQLException;
@@ -19,12 +22,14 @@ public class MyEngine extends Engine {
     private Controller logicController;
     private ServicePointStats stats;
     private ServicePointResultDao servicePointResultDao = new ServicePointResultDao();
+    private PatientResultDao patientResultDao = new PatientResultDao();
 
     // Simulation results
     private int servedPatients = 0;
     private double totalTimeInHospital = 0;
     private int emergencyPatients = 0;
     private int normalPatients = 0;
+    private final List<Customer> completedCustomers = new ArrayList<>();
 
     //Random seed for reproducibility
     private long randomSeed = 5;
@@ -188,6 +193,9 @@ public class MyEngine extends Engine {
     }
 
     private void recordCompletedPatient(Customer patient) {
+        // Store the completed patient until we get the simulation run_id.
+        completedCustomers.add(patient);
+
         servedPatients++;
         totalTimeInHospital += patient.getTotalHospitalTime();
 
@@ -365,6 +373,14 @@ public class MyEngine extends Engine {
             );
 
             System.out.println("Simulation run saved to database. run_id: " + runId);
+
+        // Save all completed patients using this simulation's run_id.
+        for (Customer customer : completedCustomers) {
+            patientResultDao.savePatientResult(runId, customer);
+        }
+
+            System.out.println("Patient results saved to database.");
+
         } catch (SQLException e) {
             System.out.println("Failed to save simulation run to database.");
             e.printStackTrace();
