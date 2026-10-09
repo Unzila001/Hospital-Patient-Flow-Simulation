@@ -7,20 +7,25 @@ import simu.framework.Clock;
 import simu.framework.Event;
 import simu.framework.EventList;
 
-import java.sql.SQLException;
 import java.util.PriorityQueue;
 import java.util.LinkedList;
 
-// TODO:
-// Service Point functionalities & calculations (+ variables needed) and reporting to be implemented
 public class ServicePoint {
-	private ServicePointDao servicePointDao = new ServicePointDao();
 	private LinkedList<Customer> jono = new LinkedList<Customer>(); // Data Structure used
 	private ContinuousGenerator generator;
 	private EventList eventList;
 	private EventType eventTypeScheduled;
 	private Controller controller;
-	//Queuestrategy strategy; // option: ordering of the customer
+
+	/**
+	 * Represents a service point in the hospital patient flow simulation.
+	 *
+	 * Manages patients waiting in a queue, handles patient priorities,
+	 * controls service capacity, and schedules service completion events.
+	 *
+	 * Also collects statistics such as waiting times, queue lengths,
+	 * and service utilization.
+	 */
 
 	//Service point information
 	private String name;
@@ -52,6 +57,17 @@ public class ServicePoint {
 	private PriorityQueue<CustomerInService> customersBeingServed = new PriorityQueue<>(
 			(a, b) -> Double.compare(a.completionTime, b.completionTime));
 
+	/**
+	 * Creates a service point for the hospital simulation.
+	 *
+	 * @param generator generates the service time for each patient
+	 * @param tapahtumalista event list used to schedule service completion
+	 * @param tyyppi type of event scheduled when service is completed
+	 * @param name name of the service point
+	 * @param capacity maximum number of patients served simultaneously
+	 * @param controller controller used to update patient waiting status
+	 */
+
 	public ServicePoint(ContinuousGenerator generator, EventList tapahtumalista, EventType tyyppi, String name, int capacity, Controller controller){
 		this.eventList = tapahtumalista;
 		this.generator = generator;
@@ -61,8 +77,19 @@ public class ServicePoint {
 		this.controller = controller;
 	}
 
-	//Add patient to the waiting queue
-	//Priority customers are placed before non-priority customers
+	/**
+	 * Adds a patient to the waiting queue.
+	 *
+	 * Priority patients are placed before normal patients.
+	 * Patients with the same priority are served in FIFO
+	 * (First In, First Out) order.
+	 *
+	 * Records the patient's queue entry time and updates
+	 * the maximum queue length.
+	 *
+	 * @param customer the patient to add to the waiting queue
+	 */
+
 	public void addQueue(Customer customer){
 		//Patient is now waiting
 		controller.updateWaitingStatus(customer.getId(), true);
@@ -84,7 +111,17 @@ public class ServicePoint {
 	    maximumQueueLength = Math.max(maximumQueueLength, jono.size());
 	}
 
-	//Remove and return the customer whose service has been completed
+	/**
+	 * Removes and returns the patient whose service has finished.
+	 *
+	 * The patient with the earliest scheduled completion time
+	 * is removed from the list of patients being served.
+	 * One service position becomes available.
+	 *
+	 * @return the patient whose service has completed,
+	 *         or null if no patient is currently being served
+	 */
+
 	public Customer removeQueue(){		//removes completed patient from service
 
 		//Get the customer with earliest completion time
@@ -104,7 +141,19 @@ public class ServicePoint {
 		return completed.customer;
 	}
 
-	//Start service for waiting customers while capacity is available
+	/**
+	 * Starts service for waiting patients when capacity is available.
+	 *
+	 * Removes patients from the waiting queue in priority order
+	 * and records their waiting times.
+	 *
+	 * Generates a service duration for each patient and calculates
+	 * the scheduled completion time.
+	 *
+	 * Updates service statistics and schedules a completion event
+	 * in the simulation event list.
+	 */
+
 	public void beginService() {		//moves patient from waiting to service
 
 		//Start service only if capacity is available
@@ -141,37 +190,136 @@ public class ServicePoint {
 		}
 	}
 
+	/**
+	 * Checks whether the service point is operating at full capacity.
+	 *
+	 * @return true if all service positions are occupied,
+	 *         false if at least one position is available
+	 */
+
 	public boolean isReserved(){ 	//Check if the service point has reached its full capacity;
 		return customersInService >= capacity;
 	}
+
+	/**
+	 * Checks whether any patients are waiting in the queue.
+	 *
+	 * @return true if the waiting queue contains patients,
+	 *         false if the queue is empty
+	 */
 
 	public boolean isOnQueue() {	//Check if there are customers in queue
 		return !jono.isEmpty();
 	}
 
+	/**
+	 * Returns the number of patients currently waiting in the queue.
+	 *
+	 * @return the current waiting queue size
+	 */
+
 	public int getQueueSize(){		//Return the current number of customers in the queue
 		return jono.size();
 	}
+
+	/**
+	 * Returns the number of patients currently receiving service.
+	 *
+	 * @return the number of patients in service
+	 */
 
 	public int getCustomersInService() {	//Return the number of customers currently being served
 		return customersInService;
 	}
 
+	/**
+	 * Returns the name of this service point.
+	 *
+	 * @return the service point name
+	 */
+
 	public String getName() {		//Return the name of service point
 		return name;
 	}
 
+	/**
+	 * Returns the maximum number of patients that can
+	 * receive service simultaneously.
+	 *
+	 * @return the service point capacity
+	 */
+
 	public int getCapacity() {		//Return the maximum service capacity
 		return capacity;
 	}
-    public double getAverageWaitingTime() { return customersStartedService == 0 ? 0 : totalWaitingTime / customersStartedService; }
-    public int getMaximumQueueLength() { return maximumQueueLength; }
-    public double getTotalServiceTime() { return totalServiceTime; }
-	public double getUtilization() { return getTotalServiceTime() / (Clock.getInstance().getTime() * getCapacity()) * 100; }
-	public int getCustomersStartedService() { return customersStartedService; }
-    public int getQueueLength() { return jono.size(); }
 
-	//Calculate percentage of service capacity that was used
+	/**
+	 * Calculates the average waiting time of patients who have started service.
+	 *
+	 * Divides the total waiting time by the number of patients
+	 * who have started service. Returns zero if no patient
+	 * has started service.
+	 *
+	 * @return the average patient waiting time in simulation minutes
+	 */
+
+	public double getAverageWaitingTime() { return customersStartedService == 0 ? 0 : totalWaitingTime / customersStartedService; }
+
+	/**
+	 * Returns the maximum number of patients that have
+	 * been waiting in the queue at the same time.
+	 *
+	 * @return the maximum recorded queue length
+	 */
+
+	public int getMaximumQueueLength() { return maximumQueueLength; }
+
+	/**
+	 * Returns the total service time accumulated for patients
+	 * who have started service at this service point.
+	 *
+	 * @return the total generated service time in simulation minutes
+	 */
+	public double getTotalServiceTime() { return totalServiceTime; }
+
+	/**
+	 * Calculates the utilization percentage of this service point
+	 * using the current simulation clock time.
+	 *
+	 * Utilization is calculated by dividing the total generated
+	 * service time by the available service capacity over time.
+	 *
+	 * @return the service point utilization percentage
+	 */
+	public double getUtilization() { return getTotalServiceTime() / (Clock.getInstance().getTime() * getCapacity()) * 100; }
+
+	/**
+	 * Returns the total number of patients who have started
+	 * receiving service at this service point.
+	 *
+	 * @return the number of patients who have started service
+	 */
+	public int getCustomersStartedService() { return customersStartedService; }
+
+	/**
+	 * Returns the current number of patients waiting
+	 * in the service point queue.
+	 *
+	 * @return the current queue length
+	 */
+	public int getQueueLength() { return jono.size(); }
+
+	/**
+	 * Calculates the utilization percentage of this service point
+	 * using the specified simulation time.
+	 *
+	 * Utilization is calculated from the total generated service
+	 * time, simulation duration, and service capacity.
+	 *
+	 * @param simulationTime the simulation duration in minutes
+	 * @return the calculated utilization percentage,
+	 *         or zero if simulation time is zero or negative
+	 */
 	public double getUtilization(double simulationTime) {
 
 		if (simulationTime <= 0) {
