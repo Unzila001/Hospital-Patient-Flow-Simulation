@@ -5,12 +5,39 @@ package simu.model;
  */
 public class ServicePointStats {
 
+    /**
+     * The name of the service point
+     */
     private String serviceName;
+
+    /**
+     * The average waiting time of the customer at this service point
+     */
     private double averageWaitingTime;
+
+    /**
+     * The max queue length of the service point
+     */
     private int maxQueueLength;
+
+    /**
+     * The current capacity of the service point
+     */
     private int currentCapacity;
+
+    /**
+     * The total service time of the service point
+     */
     private double totalServiceTime;
+
+    /**
+     * The amount of started services at this service point
+     */
     private int numberStarted;
+
+    /**
+     * The utilization of this service point
+     */
     private double utilization;
 
 
