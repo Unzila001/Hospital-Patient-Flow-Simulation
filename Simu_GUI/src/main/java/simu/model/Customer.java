@@ -3,7 +3,7 @@ package simu.model;
 import simu.framework.*;
 
 /**
- * Represents a customer in the simulation
+ * Represents a customer in the simulation.
  *
  * A customer has an arrival time, removal time, a medical condition,
  * and a priority status. The class also tracks statistics about completed
@@ -11,17 +11,66 @@ import simu.framework.*;
  */
 
 public class Customer {
+
+    /**
+     * The time the customer arrived at the simulation.
+     */
 	private double arrivalTime;
+
+    /**
+     * The time the customer left the simulation.
+     */
 	private double removalTime;
+
+    /**
+     * The total hospital time of the customer.
+     */
 	private double totalHospitalTime;
+
+    /**
+     * Customer's condition.
+     */
 	private String patientCondition = "";
+
+    /**
+     * Customer's priority.
+     */
 	private boolean priority;
+
+    /**
+     * Customer's ID.
+     */
 	private int id;
+
+    /**
+     * The next unique ID to be assigned to a customer.
+     */
 	private static int i = 1;
+
+    /**
+     * The cumulative total of time all customers have spent in the hospital.
+	 * Used to calculate the mean hospital time.
+     */
 	private static double sum = 0;
+
+    /**
+     * The amount of customers with minor injury.
+     */
 	private static long minorInjury;
+
+    /**
+     * The amount of customers with serious injury.
+     */
 	private static long seriousInjury;
+
+    /**
+     * The amount of customers with serious illness.
+     */
 	private static long illness;
+
+    /**
+     * The amount of customers who progressed fully through the simulation.
+     */
 	private static int completedPatients;
 
 	/**
