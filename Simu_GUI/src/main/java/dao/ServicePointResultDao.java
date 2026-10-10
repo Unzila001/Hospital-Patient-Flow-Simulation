@@ -15,11 +15,11 @@ public class ServicePointResultDao {
 
     ServicePointDao dao = new ServicePointDao();
 
-    public void persist (ServicePointStats servicePointStats, int runId) throws SQLException {
+    public void persist(ServicePointStats servicePointStats, int runId) throws SQLException {
         Connection conn = MariaDbConnection.getConnection();
         String sql = "INSERT INTO Service_point_result (average_waiting_time, max_queue_length, total_service_time, patients_started_service, utilization, service_id, run_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try{
+        try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDouble(1, servicePointStats.getAverageWaitingTime());
             ps.setInt(2, servicePointStats.getMaxQueueLength());
@@ -30,7 +30,7 @@ public class ServicePointResultDao {
             ps.setInt(7, runId);
 
             ps.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -48,13 +48,13 @@ public class ServicePointResultDao {
         int patients_starter = 0;
         double utilization = 0;
 
-        try{
+        try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, runId);
 
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 serviceId = rs.getInt(1);
                 averageWaitingTime = rs.getDouble(2);
                 max_queue_length = rs.getInt(3);
@@ -72,7 +72,7 @@ public class ServicePointResultDao {
 
                 results.add(servicePointStats);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return results;

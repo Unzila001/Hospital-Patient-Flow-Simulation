@@ -17,16 +17,16 @@ public class ServicePointDao {
 
         int id = 0;
 
-        try{
+        try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, service_name);
 
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 id = rs.getInt(1);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -42,19 +42,19 @@ public class ServicePointDao {
         int capacity = 0;
         String name = "";
 
-        try{
+        try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 name = rs.getString(1);
                 capacity = rs.getInt(2);
 
                 valueMap.put(name, capacity);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

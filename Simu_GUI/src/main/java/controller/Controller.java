@@ -81,13 +81,7 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
     }
 
     @Override
-    public void showManagementAnalysis(String bottleneck,
-                                       double averageWait,
-                                       int maximumQueue,
-                                       double utilization,
-                                       int currentCapacity,
-                                       int suggestedCapacity,
-                                       String recommendation) {
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue, double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
         Platform.runLater(() ->
                 ui.showManagementAnalysis(
                         bottleneck,
@@ -98,6 +92,5 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
                         suggestedCapacity,
                         recommendation
                 ));
-
     }
 }
