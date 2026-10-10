@@ -226,8 +226,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
     //Display management analysis results
     @Override
-    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue,
-                                       double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue, double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
         bottleneckValue.setText(bottleneck);
         averageWaitValue.setText(String.format("%.2f min", averageWait));
         maximumQueueValue.setText(String.valueOf(maximumQueue));
