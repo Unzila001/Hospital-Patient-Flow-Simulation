@@ -15,7 +15,7 @@ public class ServicePointStats {
 
 
     /**
-     * Optional empty constructor for the class.
+     * Creates an empty ServicePointStats object.
      */
     public ServicePointStats(){}
 
