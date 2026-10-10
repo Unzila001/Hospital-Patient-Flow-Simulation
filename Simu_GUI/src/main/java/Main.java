@@ -19,9 +19,6 @@ import java.util.Map;
 
 public class Main { // Simulator using Java FX
 	public static void main(String args[]) {
-		//SimulatorGUI.main(args);
-
-		ServicePointResultDao servicePointResultDao = new ServicePointResultDao();
-
+		SimulatorGUI.main(args);
 	}
 }
