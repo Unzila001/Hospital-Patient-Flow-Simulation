@@ -10,22 +10,21 @@ import simu.framework.EventList;
 import java.util.PriorityQueue;
 import java.util.LinkedList;
 
+/**
+ * Represents a service point in the hospital patient flow simulation.
+ *
+ * Manages patients waiting in a queue, handles patient priorities,
+ * controls service capacity, and schedules service completion events.
+ *
+ * Also collects statistics such as waiting times, queue lengths,
+ * and service utilization.
+ */
 public class ServicePoint {
 	private LinkedList<Customer> jono = new LinkedList<Customer>(); // Data Structure used
 	private ContinuousGenerator generator;
 	private EventList eventList;
 	private EventType eventTypeScheduled;
 	private Controller controller;
-
-	/**
-	 * Represents a service point in the hospital patient flow simulation.
-	 *
-	 * Manages patients waiting in a queue, handles patient priorities,
-	 * controls service capacity, and schedules service completion events.
-	 *
-	 * Also collects statistics such as waiting times, queue lengths,
-	 * and service utilization.
-	 */
 
 	//Service point information
 	private String name;
