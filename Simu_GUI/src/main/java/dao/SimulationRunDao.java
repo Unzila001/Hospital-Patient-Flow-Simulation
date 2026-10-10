@@ -8,6 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Data Access Object (DAO) for simulation run records.
+ *
+ * This class manages database operations for the simulation_run
+ * table in the hospital patient flow simulation.
+ *
+ * It provides methods to save completed simulation runs and
+ * retrieve previously stored simulation run records.
+ *
+ * Database connections are obtained through MariaDbConnection.
+ */
 public class SimulationRunDao {
 
     //SQL command for saving one completed simulation run into database
@@ -21,7 +32,25 @@ public class SimulationRunDao {
                     "doctor_utilization, bottleneck_service" +
                     ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    //Save one completed simulation run and return its generated run_id
+    /**
+     * Saves a completed simulation run and its results to the database.
+     *
+     * @param simulationTime total duration of the simulation
+     * @param randomSeed random seed used for reproducible results
+     * @param registrationCapacity capacity of Registration
+     * @param triageCapacity capacity of Triage
+     * @param doctorCapacity capacity of Doctor
+     * @param laboratoryCapacity capacity of Laboratory
+     * @param xrayCapacity capacity of X-ray
+     * @param treatmentCapacity capacity of Treatment
+     * @param patientsServed number of patients served
+     * @param averageHospitalTime average time patients spent in hospital
+     * @param patientsPerHour patient throughput per hour
+     * @param doctorUtilization doctor utilization percentage
+     * @param bottleneckService name of the bottleneck service point
+     * @return the automatically generated simulation run ID
+     * @throws SQLException if saving the simulation run fails
+     */
     public int saveSimulationRun(
             double simulationTime,
             long randomSeed,
@@ -76,6 +105,15 @@ public class SimulationRunDao {
         }
     }
 
+    /**
+     * Retrieves all stored simulation runs from the database.
+     *
+     * Each simulation run is represented as a map containing
+     * its input parameters and calculated results.
+     *
+     * @return a list of maps containing simulation run records
+     * @throws SQLException if a database connection or query operation fails
+     */
     public List<Map<String, Object>> getAllSimulationRuns() throws SQLException {
         List<Map<String, Object>> results = new ArrayList<>();
 
