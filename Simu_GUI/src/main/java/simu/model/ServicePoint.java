@@ -20,39 +20,108 @@ import java.util.LinkedList;
  * and service utilization.
  */
 public class ServicePoint {
+
+	/**
+	 * Waiting queue for patients at this service point.
+	 * Patients are ordered according to priority and arrival order.
+	 */
 	private LinkedList<Customer> jono = new LinkedList<Customer>(); // Data Structure used
+
+	/**
+	 * Generates random service durations for patients
+	 * at this service point.
+	 */
 	private ContinuousGenerator generator;
+
+	/**
+	 * Stores scheduled simulation events, including
+	 * service completion events for this service point.
+	 */
 	private EventList eventList;
+
+	/**
+	 * Defines the event type generated when a patient finishes service.
+	 */
 	private EventType eventTypeScheduled;
+
+	/**
+	 * Controller responsible for updating patient waiting status.
+	 */
 	private Controller controller;
 
-	//Service point information
+	/**
+	 * Name of the service point, such as Registration, Triage, or Doctor.
+	 */
 	private String name;
+
+	/**
+	 * Maximum number of patients who can receive service simultaneously.
+	 */
 	private int capacity;
+
+	/**
+	 * Number of patients currently receiving service.
+	 */
 	private int customersInService = 0;
 
-	//Statistics for management analysis
+	/**
+	 * Total waiting time accumulated by patients before starting service.
+	 */
 	private double totalWaitingTime = 0;
+
+	/**
+	 * Highest number of patients recorded in the waiting queue.
+	 */
 	private int maximumQueueLength = 0;
 
-    // Statistics needed by Alex's MyEngine results()
+	/**
+	 * Total number of patients who have started service.
+	 */
     private int customersStartedService = 0;
-    private double totalServiceTime = 0;
-    private final java.util.Map<Customer, Double> queueEntryTimes = new java.util.IdentityHashMap<>();
 
-	//Store customers currently being served and their completion times
+	/**
+	 * Total generated service duration accumulated for patients.
+	 */
+	private double totalServiceTime = 0;
+
+	/**
+	 * Records the time each patient entered the waiting queue.
+	 * Used to calculate patient waiting times.
+	 */
+	private final java.util.Map<Customer, Double> queueEntryTimes = new java.util.IdentityHashMap<>();
+
+	/**
+	 * Represents a patient currently receiving service
+	 * and the scheduled time when their service will finish.
+	 */
 	private static class CustomerInService {
 
+		/**
+		 * Patient currently receiving service.
+		 */
 		private Customer customer;
+
+		/**
+		 * Simulation time when the patient's service will finish.
+		 */
 		private double completionTime;
 
+		/**
+		 * Creates a record for a patient receiving service.
+		 *
+		 * @param customer patient receiving service
+		 * @param completionTime scheduled service completion time
+		 */
 		public CustomerInService(Customer customer, double completionTime) {
 			this.customer = customer;
 			this.completionTime = completionTime;
 		}
 	}
 
-	//Customers currently being served, ordered by finishing time
+	/**
+	 * Stores patients currently receiving service, ordered
+	 * by their scheduled completion times.
+	 */
 	private PriorityQueue<CustomerInService> customersBeingServed = new PriorityQueue<>(
 			(a, b) -> Double.compare(a.completionTime, b.completionTime));
 
