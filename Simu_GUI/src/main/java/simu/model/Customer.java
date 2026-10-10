@@ -116,7 +116,7 @@ public class Customer {
 	}
 
 	/**
-	 * Calculate the total time the customer was in the hospital.
+	 * Calculates the total time the customer spent in the hospital by subtracting the arrival time from the removal time.
 	 */
 	public void setTotalHospitalTime() { totalHospitalTime = removalTime - arrivalTime; }
 
@@ -147,6 +147,7 @@ public class Customer {
 
 	/**
 	 * Sets the customer's priority.
+	 * @param priority customer's priority (true/false)
 	 */
 	public void setPriority(boolean priority) {
 		this.priority = priority;
@@ -154,6 +155,7 @@ public class Customer {
 
 	/**
 	 * Checks whether the customer has priority.
+	 * @return customer's priority (true/false)
 	 */
 	public boolean hasPriority() { return priority; }
 
@@ -166,7 +168,10 @@ public class Customer {
 	}
 
 	/**
-	 * Reports the measured variables of the customer. In this case to the diagnostic output.
+	 * Reports the customer's simulation results and updates.
+	 * The cumulative statistics for completed patients.
+	 *
+	 * The statistics include the mean hospital time and the number of patients with each medical condition.
 	 */
 	public void reportResults() {
 		Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
