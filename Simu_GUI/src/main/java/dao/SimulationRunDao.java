@@ -120,11 +120,11 @@ public class SimulationRunDao {
         Connection conn = MariaDbConnection.getConnection();
         String sql = "SELECT * FROM simulation_run";
 
-        try{
+        try {
             Statement s = conn.createStatement();
             ResultSet rs = s.executeQuery(sql);
 
-            while(rs.next()){
+            while (rs.next()) {
                 HashMap<String, Object> row = new HashMap<>();
 
                 row.put("runId", rs.getInt(1));
@@ -145,7 +145,7 @@ public class SimulationRunDao {
 
                 results.add(row);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

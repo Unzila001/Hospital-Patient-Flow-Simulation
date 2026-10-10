@@ -139,7 +139,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
             //Management Analysis label
             Label bottleneckLabel = new Label("Bottleneck:");
-            Label averageWaitLabel = new Label ("Average wait:");
+            Label averageWaitLabel = new Label("Average wait:");
             Label maximumQueueLabel = new Label("Maximum queue:");
             Label utilizationLabel = new Label("Utilization:");
             Label currentCapacityLabel = new Label("Current capacity:");
@@ -165,7 +165,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
             grid.add(bottleneckLabel, 0, 7);
             grid.add(bottleneckValue, 1, 7);
 
-            grid.add(averageWaitLabel, 0,8);
+            grid.add(averageWaitLabel, 0, 8);
             grid.add(averageWaitValue, 1, 8);
 
             grid.add(maximumQueueLabel, 0, 9);
@@ -185,7 +185,6 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
             grid.add(recommendationLabel, 0, 13, 2, 1);
             grid.add(recommendationValue, 0, 14, 2, 1);
-
 
 
             display = new Visualisation2(700, 525);
@@ -226,8 +225,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
     //Display management analysis results
     @Override
-    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue,
-                                       double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue, double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
         bottleneckValue.setText(bottleneck);
         averageWaitValue.setText(String.format("%.2f min", averageWait));
         maximumQueueValue.setText(String.valueOf(maximumQueue));

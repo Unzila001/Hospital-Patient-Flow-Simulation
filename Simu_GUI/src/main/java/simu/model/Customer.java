@@ -3,27 +3,78 @@ package simu.model;
 import simu.framework.*;
 
 /**
- * Customer in a simulator
+ * Represents a customer in the simulation.
  *
- * TODO: This is to be implemented according to the requirements of the simulation model (data!)
+ * A customer has an arrival time, removal time, a medical condition,
+ * and a priority status. The class also tracks statistics about completed
+ * patients and their time spent in the hospital.
  */
 
 public class Customer {
+
+    /**
+     * The time the customer arrived at the simulation.
+     */
 	private double arrivalTime;
+
+    /**
+     * The time the customer left the simulation.
+     */
 	private double removalTime;
+
+    /**
+     * The total hospital time of the customer.
+     */
 	private double totalHospitalTime;
+
+    /**
+     * Customer's condition.
+     */
 	private String patientCondition = "";
+
+    /**
+     * Customer's priority.
+     */
 	private boolean priority;
+
+    /**
+     * Customer's ID.
+     */
 	private int id;
+
+    /**
+     * The next unique ID to be assigned to a customer.
+     */
 	private static int i = 1;
+
+    /**
+     * The cumulative total of time all customers have spent in the hospital.
+	 * Used to calculate the mean hospital time.
+     */
 	private static double sum = 0;
+
+    /**
+     * The amount of customers with minor injury.
+     */
 	private static long minorInjury;
+
+    /**
+     * The amount of customers with serious injury.
+     */
 	private static long seriousInjury;
+
+    /**
+     * The amount of customers with serious illness.
+     */
 	private static long illness;
+
+    /**
+     * The amount of customers who progressed fully through the simulation.
+     */
 	private static int completedPatients;
 
 	/**
-	 * Create a unique customer
+	 * Creates a new customer object with a unique ID.
 	 */
 	public Customer() {
 		id = i++;
@@ -33,52 +84,52 @@ public class Customer {
 	}
 
 	/**
-	 * Give the time when customer has been removed (from the system to be simulated)
-	 * @return Customer removal time
+	 * Gets the time at which the customer was removed.
+	 * @return Customer's removal time
 	 */
 	public double getRemovalTime() {
 		return removalTime;
 	}
 
 	/**
-	 * Mark the time when the customer has been removed (from the system to be simulated)
-	 * @param removalTime Customer removal time
+	 * Sets the time at which the customer was removed.
+	 * @param removalTime Customer's removal time
 	 */
 	public void setRemovalTime(double removalTime) {
 		this.removalTime = removalTime;
 	}
 
 	/**
-	 * Give the time when the customer arrived to the system to be simulated
-	 * @return Customer arrival time
+	 * Gets the time when the customer arrived to the system.
+	 * @return Customer's arrival time
 	 */
 	public double getArrivalTime() {
 		return arrivalTime;
 	}
 
 	/**
-	 * Mark the time when the customer arrived to the system to be simulated
-	 * @param arrivalTime Customer arrival time
+	 * Sets the time when the customer arrived to the system.
+	 * @param arrivalTime Customer's arrival time
 	 */
 	public void setArrivalTime(double arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
 
 	/**
-	 * Calculate the total time the customer was in the hospital
+	 * Calculate the total time the customer was in the hospital.
 	 */
 	public void setTotalHospitalTime() { totalHospitalTime = removalTime - arrivalTime; }
 
 
 	/**
-	 * Give the total time the customer was in the hospital
-	 * @return Customer total hospital time
+	 * Gets the total time the customer was in the hospital.
+	 * @return Customer's total hospital time
 	 */
 	public double getTotalHospitalTime() { return totalHospitalTime; }
 
 	/**
-	 * Sets the patients medical condition
-	 * @param patientCondition Customer medical condition (serious injury, minor injury, illness)
+	 * Sets the customer's medical condition.
+	 * @param patientCondition Customer's medical condition (serious injury, minor injury, illness)
 	 */
 	public void setPatientCondition (String patientCondition) {
 		if(patientCondition != null && (patientCondition.equals("minor injury") || patientCondition.equals("serious injury") || patientCondition.equals("illness"))){
@@ -89,33 +140,33 @@ public class Customer {
 	}
 
 	/**
-	 * Give the patients condition
-	 * @return Customers condition
+	 * Gets the customer's medical condition.
+	 * @return Customer's condition
 	 */
 	public String getPatientCondition() { return patientCondition; }
 
 	/**
-	 * Set the patients priority
+	 * Sets the customer's priority.
 	 */
 	public void setPriority(boolean priority) {
 		this.priority = priority;
 	}
 
 	/**
-	 * Checks whether the patient has priority
+	 * Checks whether the customer has priority.
 	 */
 	public boolean hasPriority() { return priority; }
 
 	/**
-	 * Get the (unique) customer id
-	 * @return Customer id
+	 * Gets the customer's unique ID.
+	 * @return Customer's id
 	 */
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * Report the measured variables of the customer. In this case to the diagnostic output.
+	 * Reports the measured variables of the customer. In this case to the diagnostic output.
 	 */
 	public void reportResults() {
 		Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
