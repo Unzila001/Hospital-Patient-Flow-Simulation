@@ -2,6 +2,8 @@ package simu.model;
 
 import simu.framework.*;
 
+import java.util.ArrayList;
+
 /**
  * Represents a customer in the simulation.
  *
@@ -168,28 +170,32 @@ public class Customer {
 	}
 
 	/**
-	 * Reports the customer's simulation results and updates.
-	 * The cumulative statistics for completed patients.
+	 * Reports the customer's simulation results and updates the cumulative statistics for completed patients.
 	 *
-	 * The statistics include the mean hospital time and the number of patients with each medical condition.
+	 * The method also updates the cumulative mean hospital time and the number of patients in each medical condition.
+	 *
+	 * @return an array of 10 strings containing the customer's results
 	 */
-	public void reportResults() {
-		Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
-		Trace.out(Trace.Level.INFO, String.format("New customer #%d arrived at %.2f minutes.", id, arrivalTime));
-		Trace.out(Trace.Level.INFO, String.format("Customer #%d removed at %.2f minutes.", id, removalTime));
-		Trace.out(Trace.Level.INFO, String.format("Customer #%d stayed %.2f minutes.", id, totalHospitalTime));
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " had condition: "  + patientCondition);
+	public String[] reportResults() {
+
+		String[] results = new String[10];
+
+		results[0] = ("\nCustomer " + id + " ready! ");
+		results[1] = String.format("New customer %d arrived at %.2f minutes.", id, arrivalTime);
+		results[2] = String.format("Customer %d removed at %.2f minutes.", id, removalTime);
+		results[3] = String.format("Customer %d stayed %.2f minutes.", id, totalHospitalTime);
+		results[4] = ("Customer " + id + " had condition: "  + patientCondition);
 
 		if(priority) {
-			Trace.out(Trace.Level.INFO,"Customer "    + id + " had priority.");
+			results[5] = ("Customer " + id + " had priority.");
 		} else {
-			Trace.out(Trace.Level.INFO,"Customer "    + id + " didn't have priority.");
+			results[5] = ("Customer " + id + " didn't have priority.");
 		}
 
 		completedPatients++;
 		sum += totalHospitalTime;
 		double mean = sum / completedPatients;
-		System.out.printf("Current mean patient time in hospital: %.2f minutes.%n", mean);
+		results[6] = String.format("Current mean patient time in hospital: %.2f minutes.", mean);
 
 		if(patientCondition.equals("minor injury")){
 			minorInjury ++;
@@ -199,9 +205,11 @@ public class Customer {
 			illness ++;
 		}
 
-		System.out.println("Current amount of patients with minor injuries: " + minorInjury);
-		System.out.println("Current amount of patients with serious injury: " + seriousInjury);
-		System.out.println("Current amount of patients with illnesses: " + illness);
+		results[7] = ("Current amount of patients with minor injuries: " + minorInjury);
+		results[8] = ("Current amount of patients with serious injury: " + seriousInjury);
+		results[9] = ("Current amount of patients with illnesses: " + illness);
+
+		return results;
 
 	}
 }
