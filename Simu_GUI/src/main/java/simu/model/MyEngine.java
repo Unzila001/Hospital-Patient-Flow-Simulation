@@ -158,7 +158,10 @@ public class MyEngine extends Engine {
                     // 10 %: potilas poistuu sairaalasta
                     a.setRemovalTime(Clock.getInstance().getTime());
                     a.setTotalHospitalTime();
-                    a.reportResults();
+                    String[] results = a.reportResults();
+                    for(String result : results){
+                        System.out.println(result);
+                    }
                     recordCompletedPatient(a);
 
                     controller.moveCustomer(a.getId(), "Exit");
@@ -182,7 +185,10 @@ public class MyEngine extends Engine {
                 a = servicePoints[5].removeQueue();
                 a.setRemovalTime(Clock.getInstance().getTime());
                 a.setTotalHospitalTime();
-                a.reportResults();
+                String[] results = a.reportResults();
+                for(String result : results){
+                    System.out.println(result);
+                }
                 recordCompletedPatient(a);
 
                 controller.moveCustomer(a.getId(), "Exit");
