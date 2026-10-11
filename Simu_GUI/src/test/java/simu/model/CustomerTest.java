@@ -43,6 +43,12 @@ public class CustomerTest {
         customer.setPatientCondition("cured");
         assertEquals("", customer.getPatientCondition());
 
+        customer.setPatientCondition("illness");
+        assertEquals("illness", customer.getPatientCondition());
+
+        customer.setPatientCondition("serious injury");
+        assertEquals("serious injury", customer.getPatientCondition());
+
         customer.setPatientCondition("minor injury");
         assertEquals("minor injury", customer.getPatientCondition());
     }
