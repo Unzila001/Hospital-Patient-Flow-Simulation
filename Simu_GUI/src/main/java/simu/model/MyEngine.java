@@ -33,12 +33,12 @@ import java.util.Random;
 public class MyEngine extends Engine {
     private final List<Customer> completedCustomers = new ArrayList<>();
     //Service point capacities
-    private final int registrationCapacity = 2;
-    private final int triageCapacity = 2;
+    private final int registrationCapacity = 1;
+    private final int triageCapacity = 1;
     private final int doctorCapacity = 2;
-    private final int xrayCapacity = 2;
-    private final int laboratoryCapacity = 2;
-    private final int treatmentCapacity = 2;
+    private final int xrayCapacity = 1;
+    private final int laboratoryCapacity = 1;
+    private final int treatmentCapacity = 1;
     private ArrivalProcess arrivalProcess;
     private Controller logicController;
     private ServicePointStats stats;
