@@ -21,13 +21,13 @@ import java.util.Random;
 
 /**
  * Implements the hospital patient flow simulation engine.
- * <p>
+ *
  * Manages patient arrivals, service point transitions,
  * patient conditions, priorities and simulation results.
- * <p>
+ *
  * The engine uses a discrete-event simulation model
  * and stores completed simulation results in a database.
- * <p>
+ *
  * Extends the Engine framework class.
  */
 public class MyEngine extends Engine {
@@ -125,13 +125,13 @@ public class MyEngine extends Engine {
 
     /**
      * Creates a new hospital simulation engine.
-     * <p>
+     *
      * Initializes six hospital service points with their
      * capacities and service time distributions.
      * Also initializes the patient arrival process.
      *
-     * @param controller the controller used to communicate
-     *                   with the graphical user interface
+     * @param controller the controller used to communicate with the graphical user interface
+     *
      * @param randomSeed the seed used for random number generation
      */
     public MyEngine(IControllerMtoV controller, long randomSeed) { // NEW
@@ -154,8 +154,7 @@ public class MyEngine extends Engine {
     }
 
     /**
-     * Initializes the simulation by scheduling
-     * the first patient arrival event.
+     * Initializes the simulation by scheduling the first patient arrival event.
      */
     @Override
     protected void initialization() {
@@ -164,11 +163,11 @@ public class MyEngine extends Engine {
 
     /**
      * Processes a scheduled simulation event.
-     * <p>
+     *
      * Handles patient arrivals, registration, triage,
      * doctor consultations, laboratory examinations,
      * X-ray examinations and treatment completion.
-     * <p>
+     *
      * Updates patient queues, patient information
      * and the graphical visualization.
      *
@@ -307,13 +306,12 @@ public class MyEngine extends Engine {
 
     /**
      * Records a patient who has completed the hospital visit.
-     * <p>
+     *
      * Updates the number of served patients, total hospital
      * time and patient priority statistics.
      * Stores the patient for later database persistence.
      *
-     * @param patient the patient who has completed treatment
-     *                or otherwise exited the hospital
+     * @param patient the patient who has completed treatment or otherwise exited the hospital
      */
     private void recordCompletedPatient(Customer patient) {
         // Store the completed patient until we get the simulation run_id.
@@ -331,14 +329,13 @@ public class MyEngine extends Engine {
 
     /**
      * Creates a statistics object for a hospital service point.
-     * <p>
+     *
      * Collects waiting time, maximum queue length, capacity,
      * total service time, number of patients served and
      * utilization information.
      *
      * @param servicePoint the service point to analyze
-     * @return a ServicePointStats object containing
-     * the collected statistics
+     * @return a ServicePointStats object containing the collected statistics
      */
     private ServicePointStats createStats(ServicePoint servicePoint) {
         stats = new ServicePointStats();
@@ -356,15 +353,15 @@ public class MyEngine extends Engine {
 
     /**
      * Calculates, displays and saves the simulation results.
-     * <p>
+     *
      * Calculates the total number of served patients,
      * average hospital time, patient throughput and
      * service point utilization.
-     * <p>
+     *
      * Identifies the service point with the highest
      * average waiting time and generates a management
      * recommendation.
-     * <p>
+     *
      * Sends the results to the user interface and
      * saves simulation, patient and service point
      * results to the database.
