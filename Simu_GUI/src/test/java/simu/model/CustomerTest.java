@@ -1,6 +1,6 @@
 package simu.model;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import simu.framework.Trace;
@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerTest {
 
-    private static Customer customer;
+    private Customer customer;
     private double totalTime = 0;
 
-    @BeforeAll
-    static void setCustomer() throws Exception{
+    @BeforeEach
+    void setCustomer() throws Exception{
         Trace.setTraceLevel(Trace.Level.INFO);
         customer = new Customer();
     }
@@ -32,9 +32,11 @@ public class CustomerTest {
 
     @Test
     void testTotalHospitalTime(){
+        customer.setArrivalTime(0.00);
+        customer.setRemovalTime(0.20);
         customer.setTotalHospitalTime();
-        totalTime = 0.2 - 0.00;
-        assertEquals(totalTime, customer.getTotalHospitalTime(), 0.01, "Not correct value");
+
+        assertEquals(0.20, customer.getTotalHospitalTime(), 0.01, "Not correct value");
     }
 
     @DisplayName("Test patient condition failing and working")
@@ -65,19 +67,27 @@ public class CustomerTest {
 
     @Test
     void testGetId(){
-        assertEquals(1, customer.getId());
+        assertTrue(customer.getId() > 0);
     }
 
     @Test
     void testResultReport(){
+
+        customer.setArrivalTime(0.00);
+        customer.setRemovalTime(0.20);
+        customer.setPatientCondition("minor injury");
+        customer.setPriority(false);
+        customer.setTotalHospitalTime();
+
+        int id = customer.getId();
         String[] expectedResults = {
-                "\nCustomer 1 ready! ",
-                "New customer 1 arrived at 0,00 minutes.",
-                "Customer 1 removed at 0,20 minutes.",
-                "Customer 1 stayed 0,00 minutes.",
-                "Customer 1 had condition: minor injury",
-                "Customer 1 didn't have priority.",
-                "Current mean patient time in hospital: 0,00 minutes.",
+                "\nCustomer " + id + " ready! ",
+                "New customer " + id + " arrived at 0,00 minutes.",
+                "Customer " + id + " removed at 0,20 minutes.",
+                "Customer " + id + " stayed 0,20 minutes.",
+                "Customer " + id + " had condition: minor injury",
+                "Customer " + id + " didn't have priority.",
+                "Current mean patient time in hospital: 0,20 minutes.",
                 "Current amount of patients with minor injuries: 1",
                 "Current amount of patients with serious injury: 0",
                 "Current amount of patients with illnesses: 0"
