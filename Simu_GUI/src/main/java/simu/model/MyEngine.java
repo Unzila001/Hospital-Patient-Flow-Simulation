@@ -31,27 +31,97 @@ import java.util.Random;
  * Extends the Engine framework class.
  */
 public class MyEngine extends Engine {
+
+    /**
+     * Stores patients who have completed their hospital visit.
+     */
     private final List<Customer> completedCustomers = new ArrayList<>();
-    //Service point capacities
+
+    /**
+     * Maximum number of patients served simultaneously at Registration.
+     */
     private final int registrationCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Triage.
+     */
     private final int triageCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Doctor.
+     */
     private final int doctorCapacity = 2;
+
+    /**
+     * Maximum number of patients served simultaneously at X-ray.
+     */
     private final int xrayCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Laboratory.
+     */
     private final int laboratoryCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Treatment.
+     */
     private final int treatmentCapacity = 1;
+
+    /**
+     * Generates patient arrival events during the simulation.
+     */
     private ArrivalProcess arrivalProcess;
+
+    /**
+     * Controller used to communicate with the graphical user interface.
+     */
     private Controller logicController;
+
+    /**
+     * Holds the calculated statistics of a service point.
+     */
     private ServicePointStats stats;
+
+    /**
+     * Provides database operations for service point results.
+     */
     private ServicePointResultDao servicePointResultDao = new ServicePointResultDao();
+
+    /**
+     * Provides database operations for completed patient results.
+     */
     private PatientResultDao patientResultDao = new PatientResultDao();
-    // Simulation results
+
+    /**
+     * Total number of patients who have completed their hospital visit.
+     */
     private int servedPatients = 0;
+
+    /**
+     * Sum of hospital visit durations for all completed patients.
+     */
     private double totalTimeInHospital = 0;
+
+    /**
+     * Number of completed patients classified as emergencies.
+     */
     private int emergencyPatients = 0;
+
+    /**
+     * Number of completed patients classified as non-emergencies.
+     */
     private int normalPatients = 0;
-    //Random seed for reproducibility
+
+    /**
+     * Seed used to produce reproducible random values.
+     */
     private long randomSeed = 5;
+
+    /**
+     * Random number generator used for patient conditions and routes.
+     */
     private Random random = new Random(randomSeed);
+
 
     /**
      * Creates a new hospital simulation engine.
