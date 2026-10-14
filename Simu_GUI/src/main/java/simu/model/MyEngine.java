@@ -36,7 +36,7 @@ public class MyEngine extends Engine {
      * Stores patients who have completed their hospital visit.
      */
     private final List<Customer> completedCustomers = new ArrayList<>();
-
+ 
     /**
      * Maximum number of patients served simultaneously at Registration.
      */
