@@ -16,11 +16,5 @@ public interface IControllerMtoV {
 
     public void removeCustomer(int customerId);
 
-    public void showManagementAnalysis(String bottleneck,
-                                       double averageWait,
-                                       int maximumQueue,
-                                       double utilization,
-                                       int currentCapacity,
-                                       int suggestedCapacity,
-                                       String recommendation);
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue, double utilization, int currentCapacity, int suggestedCapacity, String recommendation);
 }

@@ -1,4 +1,12 @@
+import dao.ServicePointResultDao;
+import dao.SimulationRunDao;
+import simu.model.ServicePointStats;
 import view.SimulatorGUI;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /* to install JavaFX (adapted from https://openjfx.io/openjfx-docs/):
  *	- Open Module Settings

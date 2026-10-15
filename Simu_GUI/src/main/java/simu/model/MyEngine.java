@@ -1,7 +1,9 @@
 package simu.model;
 
+import dao.PatientResultDao;
 import controller.Controller;
 import controller.IControllerMtoV;
+import dao.ServicePointResultDao;
 import eduni.distributions.Negexp;
 import eduni.distributions.Normal;
 import simu.framework.ArrivalProcess;
@@ -9,48 +11,168 @@ import simu.framework.Clock;
 import simu.framework.Engine;
 import simu.framework.Event;
 
+import java.util.ArrayList;
+import java.util.List;
 
+import dao.SimulationRunDao;
+
+import java.sql.SQLException;
+import java.util.Random;
+
+/**
+ * Implements the hospital patient flow simulation engine.
+ *
+ * Manages patient arrivals, service point transitions,
+ * patient conditions, priorities and simulation results.
+ *
+ * The engine uses a discrete-event simulation model
+ * and stores completed simulation results in a database.
+ *
+ * Extends the Engine framework class.
+ */
 public class MyEngine extends Engine {
-    private ArrivalProcess arrivalProcess;
-    private Controller logicController;
-    private ServicePointStats stats;
 
-    // Simulation results
-    private int servedPatients = 0;
-    private double totalTimeInHospital = 0;
-    private int emergencyPatients = 0;
-    private int normalPatients = 0;
-
-    //Service point capacities
+    /**
+     * Stores patients who have completed their hospital visit.
+     */
+    private final List<Customer> completedCustomers = new ArrayList<>();
+ 
+    /**
+     * Maximum number of patients served simultaneously at Registration.
+     */
     private final int registrationCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Triage.
+     */
     private final int triageCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Doctor.
+     */
     private final int doctorCapacity = 2;
+
+    /**
+     * Maximum number of patients served simultaneously at X-ray.
+     */
     private final int xrayCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Laboratory.
+     */
     private final int laboratoryCapacity = 1;
+
+    /**
+     * Maximum number of patients served simultaneously at Treatment.
+     */
     private final int treatmentCapacity = 1;
 
-    public MyEngine(IControllerMtoV controller) { // NEW
+    /**
+     * Generates patient arrival events during the simulation.
+     */
+    private ArrivalProcess arrivalProcess;
+
+    /**
+     * Controller used to communicate with the graphical user interface.
+     */
+    private Controller logicController;
+
+    /**
+     * Holds the calculated statistics of a service point.
+     */
+    private ServicePointStats stats;
+
+    /**
+     * Provides database operations for service point results.
+     */
+    private ServicePointResultDao servicePointResultDao = new ServicePointResultDao();
+
+    /**
+     * Provides database operations for completed patient results.
+     */
+    private PatientResultDao patientResultDao = new PatientResultDao();
+
+    /**
+     * Total number of patients who have completed their hospital visit.
+     */
+    private int servedPatients = 0;
+
+    /**
+     * Sum of hospital visit durations for all completed patients.
+     */
+    private double totalTimeInHospital = 0;
+
+    /**
+     * Number of completed patients classified as emergencies.
+     */
+    private int emergencyPatients = 0;
+
+    /**
+     * Number of completed patients classified as non-emergencies.
+     */
+    private int normalPatients = 0;
+
+    /**
+     * Seed used to produce reproducible random values.
+     */
+    private long randomSeed = 5;
+
+    /**
+     * Random number generator used for patient conditions and routes.
+     */
+    private Random random = new Random(randomSeed);
+
+
+    /**
+     * Creates a new hospital simulation engine.
+     *
+     * Initializes six hospital service points with their
+     * capacities and service time distributions.
+     * Also initializes the patient arrival process.
+     *
+     * @param controller the controller used to communicate with the graphical user interface
+     *
+     * @param randomSeed the seed used for random number generation
+     */
+    public MyEngine(IControllerMtoV controller, long randomSeed) { // NEW
         super(controller);// NEW
 
         this.logicController = (Controller) controller;
+        this.randomSeed = randomSeed;
+        this.random = new Random(randomSeed);
 
         servicePoints = new ServicePoint[6];
 
-        servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity, logicController);
-        servicePoints[1] = new ServicePoint(new Normal(10, 6), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity, logicController);
-        servicePoints[2] = new ServicePoint(new Normal(10, 6), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity, logicController);
-        servicePoints[3] = new ServicePoint(new Normal(10, 6), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity, logicController);
-        servicePoints[4] = new ServicePoint(new Normal(10, 6), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity, logicController);
-        servicePoints[5] = new ServicePoint(new Normal(10, 6), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity, logicController);
+        servicePoints[0] = new ServicePoint(new Normal(10, 6, randomSeed), eventList, EventType.REGISTRATION_COMPLETE, "Registration", registrationCapacity, logicController);
+        servicePoints[1] = new ServicePoint(new Normal(10, 6, randomSeed + 1), eventList, EventType.TRIAGE_COMPLETE, "Triage", triageCapacity, logicController);
+        servicePoints[2] = new ServicePoint(new Normal(10, 6, randomSeed + 2), eventList, EventType.DOCTOR_COMPLETE, "Doctor", doctorCapacity, logicController);
+        servicePoints[3] = new ServicePoint(new Normal(10, 6, randomSeed + 3), eventList, EventType.XRAY_COMPLETE, "X-ray", xrayCapacity, logicController);
+        servicePoints[4] = new ServicePoint(new Normal(10, 6, randomSeed + 4), eventList, EventType.LABORATORY_COMPLETE, "Laboratory", laboratoryCapacity, logicController);
+        servicePoints[5] = new ServicePoint(new Normal(10, 6, randomSeed + 5), eventList, EventType.TREATMENT_COMPLETE, "Treatment", treatmentCapacity, logicController);
 
-        arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARRIVAL);
+        arrivalProcess = new ArrivalProcess(new Negexp(15, randomSeed + 6), eventList, EventType.ARRIVAL);
     }
 
+    /**
+     * Initializes the simulation by scheduling the first patient arrival event.
+     */
     @Override
     protected void initialization() {
         arrivalProcess.generateNext();     // First arrival in the system
     }
 
+    /**
+     * Processes a scheduled simulation event.
+     *
+     * Handles patient arrivals, registration, triage,
+     * doctor consultations, laboratory examinations,
+     * X-ray examinations and treatment completion.
+     *
+     * Updates patient queues, patient information
+     * and the graphical visualization.
+     *
+     * @param t the simulation event to be processed
+     */
     @Override
     protected void runEvent(Event t) {  // B phase events
         Customer a;
@@ -85,7 +207,7 @@ public class MyEngine extends Engine {
                 a = servicePoints[1].removeQueue();
 
                 //Assign patient condition during triage
-                int condition = (int) (Math.random() * 100);
+                int condition = random.nextInt(100);
 
                 if (condition < 50) {
                     //50% illness
@@ -121,7 +243,7 @@ public class MyEngine extends Engine {
             case DOCTOR_COMPLETE:
                 a = servicePoints[2].removeQueue();
 
-                int destination = (int) (Math.random() * 100);
+                int destination = random.nextInt(100);
 
                 if (destination < 30) {
                     // 30 %: laboratorio
@@ -142,7 +264,10 @@ public class MyEngine extends Engine {
                     // 10 %: potilas poistuu sairaalasta
                     a.setRemovalTime(Clock.getInstance().getTime());
                     a.setTotalHospitalTime();
-                    a.reportResults();
+                    String[] results = a.reportResults();
+                    for (String result : results) {
+                        System.out.println(result);
+                    }
                     recordCompletedPatient(a);
 
                     controller.moveCustomer(a.getId(), "Exit");
@@ -166,7 +291,10 @@ public class MyEngine extends Engine {
                 a = servicePoints[5].removeQueue();
                 a.setRemovalTime(Clock.getInstance().getTime());
                 a.setTotalHospitalTime();
-                a.reportResults();
+                String[] results = a.reportResults();
+                for (String result : results) {
+                    System.out.println(result);
+                }
                 recordCompletedPatient(a);
 
                 controller.moveCustomer(a.getId(), "Exit");
@@ -176,7 +304,19 @@ public class MyEngine extends Engine {
         }
     }
 
+    /**
+     * Records a patient who has completed the hospital visit.
+     *
+     * Updates the number of served patients, total hospital
+     * time and patient priority statistics.
+     * Stores the patient for later database persistence.
+     *
+     * @param patient the patient who has completed treatment or otherwise exited the hospital
+     */
     private void recordCompletedPatient(Customer patient) {
+        // Store the completed patient until we get the simulation run_id.
+        completedCustomers.add(patient);
+
         servedPatients++;
         totalTimeInHospital += patient.getTotalHospitalTime();
 
@@ -187,7 +327,17 @@ public class MyEngine extends Engine {
         }
     }
 
-    private ServicePointStats createStats(ServicePoint servicePoint){
+    /**
+     * Creates a statistics object for a hospital service point.
+     *
+     * Collects waiting time, maximum queue length, capacity,
+     * total service time, number of patients served and
+     * utilization information.
+     *
+     * @param servicePoint the service point to analyze
+     * @return a ServicePointStats object containing the collected statistics
+     */
+    private ServicePointStats createStats(ServicePoint servicePoint) {
         stats = new ServicePointStats();
 
         stats.setServiceName(servicePoint.getName());
@@ -201,6 +351,21 @@ public class MyEngine extends Engine {
         return stats;
     }
 
+    /**
+     * Calculates, displays and saves the simulation results.
+     *
+     * Calculates the total number of served patients,
+     * average hospital time, patient throughput and
+     * service point utilization.
+     *
+     * Identifies the service point with the highest
+     * average waiting time and generates a management
+     * recommendation.
+     *
+     * Sends the results to the user interface and
+     * saves simulation, patient and service point
+     * results to the database.
+     */
     @Override
     protected void results() {
 
@@ -210,6 +375,8 @@ public class MyEngine extends Engine {
         controller.showEndTime(simulationTime);
 
         System.out.println("\n========== SIMULATION RESULTS ==========");
+        System.out.println("Random seed: " + randomSeed);
+
 
         // 1. Hoidetut potilaat
         System.out.println("Patients served: " + servedPatients);
@@ -328,6 +495,57 @@ public class MyEngine extends Engine {
                 suggestedCapacity,
                 recommendation
         );
+
+        //Create DAO for saving the completed simulation run
+        SimulationRunDao simulationRunDao = new SimulationRunDao();
+
+        int runId = 0;
+
+        try {
+            runId = simulationRunDao.saveSimulationRun(
+                    simulationTime,
+                    randomSeed,
+                    registrationCapacity,
+                    triageCapacity,
+                    doctorCapacity,
+                    laboratoryCapacity,
+                    xrayCapacity,
+                    treatmentCapacity,
+                    servedPatients,
+                    averageHospitalTime,
+                    patientsPerHour,
+                    doctorUtilization,
+                    bottleneck.getName()
+            );
+
+            System.out.println("\nSimulation run saved to database. run_id: " + runId);
+
+            // Save all completed patients using this simulation's run_id.
+            for (Customer customer : completedCustomers) {
+                patientResultDao.savePatientResult(runId, customer);
+            }
+
+            System.out.println("Patient results saved to database.");
+
+        } catch (SQLException e) {
+            System.out.println("Failed to save simulation run to database.");
+            e.printStackTrace();
+        }
+
+        for (ServicePoint point : servicePoints) {
+            ServicePointStats stats = createStats(point);
+
+            // Persist the service point stats into the database
+            try {
+                servicePointResultDao.persist(stats, runId);
+
+            } catch (SQLException e) {
+                System.out.println("Service point stats were not able to be persisted into the database!");
+
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Service point results saved to database!");
 
         System.out.println("\n========================================");
     }

@@ -9,32 +9,36 @@ public class PatientVisualisation {
     private boolean isWaiting = true;
     private boolean hasPriority = false;
 
-    public PatientVisualisation(Customer customer){
+    public PatientVisualisation(Customer customer) {
         this.customer = customer;
         patientLocation = "Arrival";
     }
 
-    public int getPatientId(){
+    public int getPatientId() {
         return customer.getId();
     }
 
-    public String getPatientLocation(){
+    public String getPatientLocation() {
         return patientLocation;
     }
 
-    public void setPatientLocation(String location){
+    public void setPatientLocation(String location) {
         patientLocation = location;
     }
 
-    public void setWaiting(boolean status){
+    public void setWaiting(boolean status) {
         isWaiting = status;
     }
 
-    public boolean isWaiting() { return isWaiting; }
+    public boolean isWaiting() {
+        return isWaiting;
+    }
 
-    public boolean getPriority() { return hasPriority; }
+    public boolean getPriority() {
+        return hasPriority;
+    }
 
-    public void changePriority(boolean priority){
+    public void changePriority(boolean priority) {
         hasPriority = priority;
     }
 }

@@ -17,9 +17,10 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
     /* Engine control: */
     @Override
     public void startSimulation() {
-        engine = new MyEngine(this); // new Engine thread is created for every simulation
+        engine = new MyEngine(this, ui.getSeed());
         engine.setSimulationTime(ui.getTime());
         engine.setDelay(ui.getDelay());
+
         ui.getVisualisation().clearDisplay();
         ((Thread) engine).start();
         //((Thread)engine).run(); // Never like this, why?
@@ -80,13 +81,7 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
     }
 
     @Override
-    public void showManagementAnalysis(String bottleneck,
-                                       double averageWait,
-                                       int maximumQueue,
-                                       double utilization,
-                                       int currentCapacity,
-                                       int suggestedCapacity,
-                                       String recommendation) {
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue, double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
         Platform.runLater(() ->
                 ui.showManagementAnalysis(
                         bottleneck,
@@ -97,6 +92,5 @@ public class Controller implements IControllerVtoM, IControllerMtoV {   // NEW
                         suggestedCapacity,
                         recommendation
                 ));
-
     }
 }

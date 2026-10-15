@@ -29,9 +29,11 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
     // UI Components:
     private TextField time;
     private TextField delay;
+    private TextField seed;
     private Label results;
     private Label timeLabel;
     private Label delayLabel;
+    private Label seedLabel;
     private Label resultLabel;
 
     //management analysis GUI components
@@ -94,6 +96,12 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
             delay.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
             delay.setPrefWidth(150);
 
+            seedLabel = new Label("Random seed:");
+            seedLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+            seed = new TextField("5");
+            seed.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+            seed.setPrefWidth(150);
+
             resultLabel = new Label("Total time:");
             resultLabel.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
             results = new Label();
@@ -111,13 +119,19 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
             grid.add(timeLabel, 0, 0);   // column, row
             grid.add(time, 1, 0);
+
             grid.add(delayLabel, 0, 1);
             grid.add(delay, 1, 1);
-            grid.add(resultLabel, 0, 2);
-            grid.add(results, 1, 2);
-            grid.add(startButton, 0, 3);
-            grid.add(speedUpButton, 0, 4);
-            grid.add(slowButton, 1, 4);
+
+            grid.add(seedLabel, 0, 2);
+            grid.add(seed, 1, 2);
+
+            grid.add(resultLabel, 0, 3);
+            grid.add(results, 1, 3);
+
+            grid.add(startButton, 0, 4);
+            grid.add(speedUpButton, 0, 5);
+            grid.add(slowButton, 1, 5);
 
             //Management analysis title
             Label managementTitle = new Label("Management Analysis");
@@ -125,7 +139,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
             //Management Analysis label
             Label bottleneckLabel = new Label("Bottleneck:");
-            Label averageWaitLabel = new Label ("Average wait:");
+            Label averageWaitLabel = new Label("Average wait:");
             Label maximumQueueLabel = new Label("Maximum queue:");
             Label utilizationLabel = new Label("Utilization:");
             Label currentCapacityLabel = new Label("Current capacity:");
@@ -151,7 +165,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
             grid.add(bottleneckLabel, 0, 7);
             grid.add(bottleneckValue, 1, 7);
 
-            grid.add(averageWaitLabel, 0,8);
+            grid.add(averageWaitLabel, 0, 8);
             grid.add(averageWaitValue, 1, 8);
 
             grid.add(maximumQueueLabel, 0, 9);
@@ -171,7 +185,6 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
             grid.add(recommendationLabel, 0, 13, 2, 1);
             grid.add(recommendationValue, 0, 14, 2, 1);
-
 
 
             display = new Visualisation2(700, 525);
@@ -200,6 +213,11 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
     }
 
     @Override
+    public long getSeed() {
+        return Long.parseLong(seed.getText());
+    }
+
+    @Override
     public void setEndingTime(double time) {
         DecimalFormat formatter = new DecimalFormat("#0.00");
         this.results.setText(formatter.format(time));
@@ -207,8 +225,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
 
     //Display management analysis results
     @Override
-    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue,
-                                       double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
+    public void showManagementAnalysis(String bottleneck, double averageWait, int maximumQueue, double utilization, int currentCapacity, int suggestedCapacity, String recommendation) {
         bottleneckValue.setText(bottleneck);
         averageWaitValue.setText(String.format("%.2f min", averageWait));
         maximumQueueValue.setText(String.valueOf(maximumQueue));
