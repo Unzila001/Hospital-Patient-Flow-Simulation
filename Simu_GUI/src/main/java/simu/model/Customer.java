@@ -3,6 +3,7 @@ package simu.model;
 import simu.framework.*;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Represents a customer in the simulation.
@@ -181,9 +182,9 @@ public class Customer {
 		String[] results = new String[10];
 
 		results[0] = ("\nCustomer " + id + " ready! ");
-		results[1] = String.format("New customer %d arrived at %.2f minutes.", id, arrivalTime);
-		results[2] = String.format("Customer %d removed at %.2f minutes.", id, removalTime);
-		results[3] = String.format("Customer %d stayed %.2f minutes.", id, totalHospitalTime);
+		results[1] = String.format(Locale.GERMANY, "New customer %d arrived at %.2f minutes.", id, arrivalTime);
+		results[2] = String.format(Locale.GERMANY, "Customer %d removed at %.2f minutes.", id, removalTime);
+		results[3] = String.format(Locale.GERMANY, "Customer %d stayed %.2f minutes.", id, totalHospitalTime);
 		results[4] = ("Customer " + id + " had condition: "  + patientCondition);
 
 		if(priority) {
@@ -195,7 +196,7 @@ public class Customer {
 		completedPatients++;
 		sum += totalHospitalTime;
 		double mean = sum / completedPatients;
-		results[6] = String.format("Current mean patient time in hospital: %.2f minutes.", mean);
+		results[6] = String.format(Locale.GERMANY, "Current mean patient time in hospital: %.2f minutes.", mean);
 
 		if(patientCondition.equals("minor injury")){
 			minorInjury ++;
