@@ -1,1 +1,6 @@
+**/target/**
+!Simu_GUI/target/
+!Simu_GUI/target/reports/
+!Simu_GUI/target/reports/apidocs/
+!Simu_GUI/target/reports/apidocs/**
 **/out/**
