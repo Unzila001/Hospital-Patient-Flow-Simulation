@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import simu.framework.Trace;
 import eduni.distributions.Normal;
 import simu.framework.EventList;
-import java.security.Provider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
