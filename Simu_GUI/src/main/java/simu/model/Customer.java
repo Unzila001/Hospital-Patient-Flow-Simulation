@@ -184,6 +184,7 @@ public class Customer {
 		results[0] = ("\nCustomer " + id + " ready! ");
 		results[1] = String.format(Locale.GERMANY, "New customer %d arrived at %.2f minutes.", id, arrivalTime);
 		results[2] = String.format(Locale.GERMANY, "Customer %d removed at %.2f minutes.", id, removalTime);
+		System.out.printf(String.format(Locale.GERMANY, "New customer %d arrived at %.2f minutes.", id, arrivalTime));
 		results[3] = String.format(Locale.GERMANY, "Customer %d stayed %.2f minutes.", id, totalHospitalTime);
 		results[4] = ("Customer " + id + " had condition: "  + patientCondition);
 
