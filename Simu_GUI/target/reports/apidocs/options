@@ -1,0 +1,25 @@
+--no-fonts
+-classpath
+'C:/Users/osbdo/.m2/repository/org/openjfx/javafx/20.0.1/javafx-20.0.1.pom;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-graphics/21.0.2/javafx-graphics-21.0.2.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-graphics/21.0.2/javafx-graphics-21.0.2-win.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-base/21.0.2/javafx-base-21.0.2.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-base/21.0.2/javafx-base-21.0.2-win.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-fxml/20.0.1/javafx-fxml-20.0.1.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-fxml/20.0.1/javafx-fxml-20.0.1-win.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-controls/20.0.1/javafx-controls-20.0.1.jar;C:/Users/osbdo/.m2/repository/org/openjfx/javafx-controls/20.0.1/javafx-controls-20.0.1-win.jar;C:/Users/osbdo/.m2/repository/org/mariadb/jdbc/mariadb-java-client/3.5.6/mariadb-java-client-3.5.6.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'21'
+-sourcepath
+'C:/Users/osbdo/Documents/GitHub/Hospital-Patient-Flow-Simulation/Simu_GUI/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2026. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/osbdo/Documents/GitHub/Hospital-Patient-Flow-Simulation/Simu_GUI/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'GUI 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'GUI 1.0-SNAPSHOT API'
